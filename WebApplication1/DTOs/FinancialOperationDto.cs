@@ -7,6 +7,5 @@
         public string? Description { get; set; }
 
         public int OperationTypeId { get; set; }
-        //public OperationTypeDto OperationType { get; set; }
     }
 }

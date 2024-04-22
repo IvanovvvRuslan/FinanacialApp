@@ -29,7 +29,9 @@ namespace Task11.Services
         }
         public async Task<IEnumerable<FinancialOperationViewModel>> GetAll()
         {
-            var financialOperations = await _context.FinancialOperations.ToListAsync();
+            var financialOperations = await _context.FinancialOperations
+                .Include(o => o.OperationType)
+                .ToListAsync();
 
             var financialOperationsViewModel = _mapper.Map<IEnumerable<FinancialOperationViewModel>>(financialOperations);
 
@@ -38,7 +40,9 @@ namespace Task11.Services
 
         public async Task<FinancialOperationViewModel> GetById(int? id)
         {
-            var financialOperation = await _context.FinancialOperations.FirstOrDefaultAsync(f => f.Id == id);
+            var financialOperation = await _context.FinancialOperations
+                .Include (o => o.OperationType)
+                .FirstOrDefaultAsync(f => f.Id == id);
 
             if (financialOperation == null)
                 throw new NotFoundException("Financial operation not found");
