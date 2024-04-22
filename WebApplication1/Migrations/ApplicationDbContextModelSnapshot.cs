@@ -22,26 +22,6 @@ namespace Task11.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Task11.Models.Expense", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Expenses");
-                });
-
             modelBuilder.Entity("Task11.Models.FinancialOperation", b =>
                 {
                     b.Property<int>("Id")
@@ -59,27 +39,17 @@ namespace Task11.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ExpenseId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IncomeId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<int>("OperationType")
+                    b.Property<int>("OperationTypeId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExpenseId");
-
-                    b.HasIndex("IncomeId");
+                    b.HasIndex("OperationTypeId");
 
                     b.ToTable("FinancialOperations");
                 });
 
-            modelBuilder.Entity("Task11.Models.Income", b =>
+            modelBuilder.Entity("Task11.Models.OperationType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -90,40 +60,30 @@ namespace Task11.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsIncome")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Incomes");
+                    b.ToTable("OperationTypes");
                 });
 
             modelBuilder.Entity("Task11.Models.FinancialOperation", b =>
                 {
-                    b.HasOne("Task11.Models.Expense", "Expenses")
+                    b.HasOne("Task11.Models.OperationType", "OperationType")
                         .WithMany("FinancialOperations")
-                        .HasForeignKey("ExpenseId")
+                        .HasForeignKey("OperationTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Task11.Models.Income", "Incomes")
-                        .WithMany("FinancialOperations")
-                        .HasForeignKey("IncomeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Expenses");
-
-                    b.Navigation("Incomes");
+                    b.Navigation("OperationType");
                 });
 
-            modelBuilder.Entity("Task11.Models.Expense", b =>
-                {
-                    b.Navigation("FinancialOperations");
-                });
-
-            modelBuilder.Entity("Task11.Models.Income", b =>
+            modelBuilder.Entity("Task11.Models.OperationType", b =>
                 {
                     b.Navigation("FinancialOperations");
                 });

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Task11.Data;
+using Task11.Services;
 
 namespace Task11
 {
@@ -16,6 +17,12 @@ namespace Task11
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            builder.Services.AddAutoMapper(typeof(Program));
+
+            builder.Services.AddScoped<IOperationTypeService, OperationTypeService>();
+            builder.Services.AddScoped<IFinancialOperationService, FinancialOperationService>();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

@@ -1,13 +1,12 @@
-﻿namespace Task11.Models
+﻿namespace Task11.DTOs
 {
-    public class FinancialOperation
+    public class FinancialOperationDto
     {
-        public int Id { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
         public string? Description { get; set; }
 
         public int OperationTypeId { get; set; }
-        public OperationType OperationType { get; set; }
+        //public OperationTypeDto OperationType { get; set; }
     }
 }
