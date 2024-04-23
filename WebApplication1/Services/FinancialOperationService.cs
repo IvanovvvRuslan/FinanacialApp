@@ -31,6 +31,7 @@ namespace Task11.Services
         {
             var financialOperations = await _context.FinancialOperations
                 .Include(o => o.OperationType)
+                .AsNoTracking()
                 .ToListAsync();
 
             var financialOperationsViewModel = _mapper.Map<IEnumerable<FinancialOperationViewModel>>(financialOperations);
@@ -42,6 +43,7 @@ namespace Task11.Services
         {
             var financialOperation = await _context.FinancialOperations
                 .Include (o => o.OperationType)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(f => f.Id == id);
 
             if (financialOperation == null)

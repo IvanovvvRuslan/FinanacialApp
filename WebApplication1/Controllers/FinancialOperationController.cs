@@ -32,7 +32,7 @@ namespace Task11.Controllers
 
         // GET: FinancialOperationController/Details/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<FinancialOperationViewModel>> GetFinancialOperation(int id)
+        public async Task<ActionResult<FinancialOperationViewModel>> GetFinancialOperation([FromRoute]int id)
         { 
             var financialOperation = await _financialOperationService.GetById(id);
 
@@ -44,7 +44,7 @@ namespace Task11.Controllers
 
         // GET: FinancialOperationController/Create
         [HttpPost]
-        public async Task<IActionResult> CreateFinancialOperation(FinancialOperationDto financialOperation)
+        public async Task<IActionResult> CreateFinancialOperation([FromBody]FinancialOperationDto financialOperation)
         { 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -56,7 +56,7 @@ namespace Task11.Controllers
 
         // GET: FinancialOperationController/Edit/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateFinancialOperation(int id, FinancialOperationDto financialOperation)
+        public async Task<IActionResult> UpdateFinancialOperation([FromRoute]int id, [FromBody]FinancialOperationDto financialOperation)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace Task11.Controllers
 
         // GET: FinancialOperationController/Delete/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFinancialOperation(int id)
+        public async Task<IActionResult> DeleteFinancialOperation([FromRoute] int id)
         {
             try
             {

@@ -30,7 +30,7 @@ namespace Task11.Controllers
 
         // GET: OperationTypeController/Details/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<OperationTypeViewModel>> GetOperationType(int id)
+        public async Task<ActionResult<OperationTypeViewModel>> GetOperationType([FromRoute] int id)
         {
             var operationType = await _operationTypeService.GetById(id);
 
@@ -42,7 +42,7 @@ namespace Task11.Controllers
 
         // POST: OperationTypeController/Create
         [HttpPost]
-        public async Task<IActionResult> CreateOperationType(OperationTypeDto operationType)
+        public async Task<IActionResult> CreateOperationType([FromBody]OperationTypeDto operationType)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -54,7 +54,7 @@ namespace Task11.Controllers
 
         //POST: OperationTypeController/Edit/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOperationType(int id, OperationTypeDto operationType)
+        public async Task<IActionResult> UpdateOperationType([FromRoute] int id, [FromBody]OperationTypeDto operationType)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace Task11.Controllers
 
         // POST: OperationTypeController/Delete/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOperationType(int id)
+        public async Task<IActionResult> DeleteOperationType([FromRoute] int id)
         {
             try
             {

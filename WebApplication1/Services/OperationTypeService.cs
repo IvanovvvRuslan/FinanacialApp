@@ -32,7 +32,9 @@ namespace Task11.Services
 
         public async Task<IEnumerable<OperationTypeViewModel>> GetAll()
         {
-            var operationType = await _context.OperationTypes.ToListAsync();
+            var operationType = await _context.OperationTypes
+                .AsNoTracking()
+                .ToListAsync();
 
             var operationTypeViewModel = _mapper.Map<IEnumerable<OperationTypeViewModel>>(operationType);
 
@@ -41,7 +43,9 @@ namespace Task11.Services
 
         public async Task<OperationTypeViewModel> GetById(int? id)
         {
-            var operationType = await _context.OperationTypes.FirstOrDefaultAsync(o => o.Id == id);
+            var operationType = await _context.OperationTypes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(o => o.Id == id);
             
             if (operationType == null)
                 throw new NotFoundException("Operation type not found");
