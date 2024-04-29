@@ -22,7 +22,7 @@ namespace Task11
 
             builder.Services.AddScoped<IOperationTypeService, OperationTypeService>();
             builder.Services.AddScoped<IFinancialOperationService, FinancialOperationService>();
-            builder.Services.AddScoped<IDailyReportService, DailyReportService>();
+            builder.Services.AddScoped<IReportService, ReportService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

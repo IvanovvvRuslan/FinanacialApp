@@ -8,34 +8,45 @@ using Task11.ViewModels;
 
 namespace Task11.Services
 {
-    public interface IDailyReportService
-    { 
-        Task<DailyReport> GetDailyReport(DateTime dateTime);
+    public interface IReportService
+    {
+        Task<Report> GetDailyReport(DateTime date);
+        Task<Report> GetPeriodReport(DateTime startDate, DateTime endDate);
     }
 
-    public class DailyReportService: IDailyReportService
+    public class ReportService: IReportService
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public DailyReportService(ApplicationDbContext context, IMapper mapper)
+        public ReportService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<DailyReport> GetDailyReport(DateTime dateTime)
+        public async Task<Report> GetDailyReport(DateTime date)
         {
-            var financialOperations = await _context.FinancialOperations
-                .Include(o => o.OperationType)
-                .Where(f => f.Date.Date == dateTime.Date)
-                .AsNoTracking()
-                .ToListAsync();
+            return await GetReport(date, date);
+        }
 
+        public async Task<Report> GetPeriodReport(DateTime startDate, DateTime endDate)
+        {
+            return await GetReport(startDate, endDate);
+        }
+
+        private async Task<Report> GetReport(DateTime startDate, DateTime endDate)
+        {
             decimal totalIncome = 0;
             decimal totalExpense = 0;
 
-            foreach (var operation in financialOperations) 
+            var financialOperations = await _context.FinancialOperations
+                .Include(o => o.OperationType)
+                .Where(f => f.Date.Date >= startDate.Date && f.Date.Date <= endDate.Date)
+                .AsNoTracking()
+                .ToListAsync();
+
+            foreach (var operation in financialOperations)
             {
                 var operationType = await _context.OperationTypes
                     .AsNoTracking()
@@ -49,20 +60,21 @@ namespace Task11.Services
                     totalIncome += operation.Amount;
                 }
                 else
-                { 
+                {
                     totalExpense += operation.Amount;
                 }
             }
 
-            DailyReport dailyReport = new DailyReport()
-            { 
-                Date = dateTime.Date,
+            Report report = new Report()
+            {
+                StartDate = startDate,
+                EndDate = endDate,
                 TotalIncome = totalIncome,
-                TotalExpenses = totalExpense,
+                TotalExpense = totalExpense,
                 Operations = _mapper.Map<List<FinancialOperationViewModel>>(financialOperations)
             };
 
-            return dailyReport;
+            return report;
         }
     }
 }
