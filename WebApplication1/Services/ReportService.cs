@@ -46,7 +46,6 @@ namespace Task11.Services
                 throw new InvalidOperationException("The start date must be less than or equal to the end date.");
             }
 
-
             var financialOperations = await _context.FinancialOperations
                 .Include(o => o.OperationType)
                 .Where(f => f.Date.Date >= startDate.Date && f.Date.Date <= endDate.Date)
@@ -55,11 +54,7 @@ namespace Task11.Services
 
             foreach (var operation in financialOperations)
             {
-                var operationType = await _context.OperationTypes
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(o => o.Id == operation.OperationTypeId);
-
-                if (operationType.IsIncome == true)
+                if(operation.OperationType.IsIncome)
                 {
                     totalIncome += operation.Amount;
                 }
