@@ -80,9 +80,15 @@ namespace Task11.Services
         public async Task Delete(int id)
         {
             var operationType = await _context.OperationTypes.FirstOrDefaultAsync(o => o.Id == id);
+
+            var financialOperations = await _context.FinancialOperations
+                .FirstOrDefaultAsync(o => o.OperationTypeId == id);
             
             if (operationType == null)
                 throw new NotFoundException("Operation type not found");
+
+            if (financialOperations != null)
+                throw new InvalidOperationException("The operation type cannot be deleted because there are financial operations associated with it.");
 
             _context.OperationTypes.Remove(operationType);
             await _context.SaveChangesAsync();

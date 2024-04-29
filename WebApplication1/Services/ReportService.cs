@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Task11.Data;
 using Task11.Exceptions;
@@ -40,6 +41,12 @@ namespace Task11.Services
             decimal totalIncome = 0;
             decimal totalExpense = 0;
 
+            if (startDate > endDate)
+            {
+                throw new InvalidOperationException("The start date must be less than or equal to the end date.");
+            }
+
+
             var financialOperations = await _context.FinancialOperations
                 .Include(o => o.OperationType)
                 .Where(f => f.Date.Date >= startDate.Date && f.Date.Date <= endDate.Date)
@@ -51,9 +58,6 @@ namespace Task11.Services
                 var operationType = await _context.OperationTypes
                     .AsNoTracking()
                     .FirstOrDefaultAsync(o => o.Id == operation.OperationTypeId);
-
-                if (operationType == null)
-                    throw new NotFoundException("Operation type not found");
 
                 if (operationType.IsIncome == true)
                 {
