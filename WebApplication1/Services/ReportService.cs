@@ -42,7 +42,7 @@ namespace Task11.Services
             decimal totalExpense = 0;
 
             if (startDate > endDate)
-                throw new InvalidOperationException("The start date must be less than or equal to the end date.");
+                throw new InvalidDateException("The start date must be less than or equal to the end date.");
             
             var financialOperations = await _context.FinancialOperations
                 .Include(o => o.OperationType)

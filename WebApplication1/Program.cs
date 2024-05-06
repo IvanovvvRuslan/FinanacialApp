@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Task11.Data;
+using Task11.Exceptions;
 using Task11.Services;
 
 namespace Task11
@@ -39,6 +40,7 @@ namespace Task11
 
             app.UseAuthorization();
 
+            app.UseMiddleware<ErrorHandlingMiddleware>();  // Added middleware
 
             app.MapControllers();
 
