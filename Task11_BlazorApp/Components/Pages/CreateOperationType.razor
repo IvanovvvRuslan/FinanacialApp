@@ -1,0 +1,73 @@
+﻿@using Services
+@using Task11_Common.ViewModels
+
+@page "/operationtypes/create/"
+
+@inject IOperationTypeService OperationTypeService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<h3>Create Operation Type</h3>
+
+@if (string.IsNullOrEmpty(errorMessage))
+{
+    <EditForm Model="@operationType" OnValidSubmit="AddOperationType">
+        <ValidationSummary />
+        <p>Name: <input type="text" @bind = "@operationType.Name"></p>
+        <p>
+            Income/Expense:
+            <select @oninput="HandleChange" @bind="operationType.IsIncome">
+                <option value="true" selected=@(operationType.IsIncome ? "selected" : "")>Income</option>
+                <option value="false" selected=@(!operationType.IsIncome ? "selected" : "")>Expense</option>
+            </select>
+        </p>
+
+        <p>Selected Value: @operationType.IsIncome</p>
+        <p>Description:<input type="text" @bind="@operationType.Description" /></p>
+        <button type=" = "submit">Create</button>
+
+        @if (!string.IsNullOrEmpty(resultMessage))
+        {
+            <div class="alert alert-success">@resultMessage</div>
+        }
+    </EditForm>   
+}
+
+@code {
+    private string errorMessage;
+    private string resultMessage;
+    private OperationTypeViewModelCommon operationType = new OperationTypeViewModelCommon();
+
+    public string IsIncomeValue
+    {
+        get => operationType.IsIncome.ToString();
+        set => operationType.IsIncome = bool.Parse(value);
+    }
+
+    private async Task AddOperationType()
+    {
+        try
+        {
+            resultMessage = await OperationTypeService.CreateOperationType(operationType);
+            NavigationManager.NavigateTo("/operationtypes");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        
+    }
+
+    private void HandleChange(ChangeEventArgs e)
+    {
+        if (e.Value.ToString() == "true")
+        {
+            operationType.IsIncome = true;
+        }
+        else
+        {
+            operationType.IsIncome = false;
+        }
+    }
+
+}

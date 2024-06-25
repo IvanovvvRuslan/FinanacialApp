@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Text.Json;
 using Task11.Exceptions;
 using Task11.Reports;
@@ -19,13 +20,13 @@ namespace Task11.Controllers
 
         // GET: DailyReport
         [HttpGet("daily/{dateTime}")]
-        public async Task<ActionResult<Report>> GetDailyReport ([FromRoute]DateTime dateTime)
+        public async Task<ActionResult<Report>> GetDailyReport([FromRoute] DateTime dateTime)
         {
             var dailyReport = await _reportService.GetDailyReport(dateTime);
 
-            if (dailyReport == null) 
+            if (dailyReport == null)
                 return NotFound();
-            
+
             return Ok(dailyReport);
         }
 
@@ -39,6 +40,20 @@ namespace Task11.Controllers
                 return NotFound();
 
             return Ok(periodReport);
+        }
+
+        //GET: Exception                                        2 DELETE !!!
+        [HttpGet("dateException")]
+        public IActionResult GetDateException()
+        { 
+           throw new InvalidDateException("Invalid date exception test text");
+        }
+
+        //GET: Exception
+        [HttpGet("exception")]
+        public IActionResult GetException()
+        {
+            throw new Exception();
         }
     }
 }

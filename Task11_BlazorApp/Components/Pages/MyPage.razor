@@ -1,0 +1,14 @@
+﻿@page "/mypage"
+@rendermode InteractiveServer
+
+<h3>My Page</h3>
+
+<div>
+    <input type="text" @bind="@item" />
+    <p>Value: @item</p>
+</div>
+
+@code {
+
+    string item = "hello";
+}

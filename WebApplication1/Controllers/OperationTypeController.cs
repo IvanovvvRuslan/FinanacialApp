@@ -59,7 +59,7 @@ namespace Task11.Controllers
             try
             {
                 await _operationTypeService.Update(id, operationType);
-                return Ok();
+                return Ok("Operation Type edited");
             }
             catch (NotFoundException ex)
             {
@@ -78,7 +78,7 @@ namespace Task11.Controllers
             try
             {
                 await _operationTypeService.Delete(id);
-                return Ok();
+                return Ok("Operation type deleted successfully");
             }
             catch (NotFoundException ex)
             {

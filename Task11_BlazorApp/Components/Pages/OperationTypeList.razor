@@ -1,0 +1,96 @@
+﻿@using Services
+@using Task11_Common.ViewModels
+
+@page "/operationtypes"
+@inject IOperationTypeService OperationTypeService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<h3>Operation Types</h3>
+
+@if (string.IsNullOrEmpty(errorMessage))
+{
+        if (operationTypes == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+        <MudButton Variant="Variant.Filled" OnClick="NavigateToCreate">Create</MudButton>
+            <button @onclick="() => NavigateToCreate()">Create</button>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Income/Expense</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var operationType in operationTypes)
+                    {
+                        <tr>
+                            <td>@operationType.Name</td>
+                            <td>@(operationType.IsIncome ? "Income" : "Expense")</td>
+                            <td>@operationType.Description</td>
+                            <td>
+                                <button @onclick="() => NavigateToEdit(operationType.Id)">Edit</button>
+                                <button @onclick="() => DeleteOperationType(operationType.Id)">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @if (!string.IsNullOrEmpty(resultMessage))
+            {    
+            <div class="alert alert-success">@resultMessage</div>
+            }
+        }
+}
+else
+{
+    <p><em>@errorMessage</em></p>
+}
+
+@code {
+    private IEnumerable<OperationTypeViewModelCommon> operationTypes;
+
+    private string errorMessage;
+    private string resultMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            operationTypes = await OperationTypeService.GetOperationTypes();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private void NavigateToCreate()
+    {
+        NavigationManager.NavigateTo("/operationtypes/create");
+    }
+
+    private void NavigateToEdit(int id)
+    {
+        NavigationManager.NavigateTo($"operationtypes/edit/{id}");    
+    }
+
+    private async Task DeleteOperationType(int id)
+    {
+        try
+        {
+            resultMessage = await OperationTypeService.DeleteOperationType(id);
+            operationTypes = await OperationTypeService.GetOperationTypes();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+}

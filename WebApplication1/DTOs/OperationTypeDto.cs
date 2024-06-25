@@ -8,6 +8,6 @@ namespace Task11.DTOs
         public bool IsIncome { get; set; }
         public string? Description { get; set; }
 
-        public ICollection<FinancialOperationDto> FinancialOperations { get; set; }
+        public ICollection<FinancialOperationDto>? FinancialOperations { get; set; }
     }
 }
