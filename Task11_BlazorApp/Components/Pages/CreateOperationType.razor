@@ -7,24 +7,52 @@
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
-<h3>Create Operation Type</h3>
+<MudText Typo="Typo.h4" Style="margin-bottom: 20px; margin-top: 20px;">Create Operation Type</MudText>
 
 @if (string.IsNullOrEmpty(errorMessage))
 {
     <EditForm Model="@operationType" OnValidSubmit="AddOperationType">
         <ValidationSummary />
-        <p>Name: <input type="text" @bind = "@operationType.Name"></p>
-        <p>
-            Income/Expense:
-            <select @oninput="HandleChange" @bind="operationType.IsIncome">
-                <option value="true" selected=@(operationType.IsIncome ? "selected" : "")>Income</option>
-                <option value="false" selected=@(!operationType.IsIncome ? "selected" : "")>Expense</option>
-            </select>
-        </p>
+         <MudGrid>
+            <MudItem xs="1" Style="display: flex; align-items: center">
+                <MudText>
+                    Name:
+                </MudText>
+            </MudItem>
+            <MudItem xs="2">
+                    <MudTextField @bind-Value="@operationType.Name" Label="Enter a name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+            </MudItem>
+        </MudGrid>
+
+        <MudGrid>
+            <MudItem xs="1" Style="display: flex; align-items: center">
+                <MudText>
+                    Income/Expense:
+                </MudText>
+            </MudItem>
+            <MudItem xs="2">
+                <MudSelect T="bool" @bind-Value="operationType.IsIncome" Margin="Margin.Dense" Label="Select Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="true">Income</MudSelectItem>
+                    <MudSelectItem Value="false">Expense</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
 
         <p>Selected Value: @operationType.IsIncome</p>
-        <p>Description:<input type="text" @bind="@operationType.Description" /></p>
-        <button type=" = "submit">Create</button>
+        
+        <MudGrid>
+            <MudItem xs="1" Style="display: flex; align-items: center">
+                <MudText>
+                    Description:
+                </MudText>
+            </MudItem>
+            <MudItem xs="4">
+                <MudTextField @bind-Value="@operationType.Description" Label="Enter a description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+            </MudItem>
+        </MudGrid>
+
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin-top: 30px;" OnClick="AddOperationType">Create</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Style="margin-top: 30px;" OnClick="Cancel">Cancel</MudButton>
 
         @if (!string.IsNullOrEmpty(resultMessage))
         {
@@ -70,4 +98,8 @@
         }
     }
 
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/operationtypes");
+    }
 }

@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Task11_BlazorApp", "Task11_
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Task11_Common", "Task11_Common\Task11_Common.csproj", "{C3107B60-5533-45B5-9DA4-3A1BBD79618B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Task11_BlazorApp_new", "Task11_BlazorApp_new\Task11_BlazorApp_new.csproj", "{E3A1A95A-6756-4803-AA7A-3A11666E416F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{C3107B60-5533-45B5-9DA4-3A1BBD79618B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3107B60-5533-45B5-9DA4-3A1BBD79618B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3107B60-5533-45B5-9DA4-3A1BBD79618B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3A1A95A-6756-4803-AA7A-3A11666E416F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3A1A95A-6756-4803-AA7A-3A11666E416F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3A1A95A-6756-4803-AA7A-3A11666E416F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3A1A95A-6756-4803-AA7A-3A11666E416F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

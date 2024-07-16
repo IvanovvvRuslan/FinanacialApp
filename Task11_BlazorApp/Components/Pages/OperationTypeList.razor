@@ -1,73 +1,75 @@
 ﻿@using Services
 @using Task11_Common.ViewModels
+@using Task11_BlazorApp.Components.Pages
+
 
 @page "/operationtypes"
 @inject IOperationTypeService OperationTypeService
 @inject NavigationManager NavigationManager
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 @rendermode InteractiveServer
 
-<h3>Operation Types</h3>
+<MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 20px;">Operation Types</MudText>
 
-@if (string.IsNullOrEmpty(errorMessage))
+@if (string.IsNullOrEmpty(_errorMessage))
 {
-        if (operationTypes == null)
+        if (_operationTypes == null)
         {
             <p><em>Loading...</em></p>
         }
         else
         {
-        <MudButton Variant="Variant.Filled" OnClick="NavigateToCreate">Create</MudButton>
-            <button @onclick="() => NavigateToCreate()">Create</button>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Income/Expense</th>
-                        <th>Description</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var operationType in operationTypes)
-                    {
-                        <tr>
-                            <td>@operationType.Name</td>
-                            <td>@(operationType.IsIncome ? "Income" : "Expense")</td>
-                            <td>@operationType.Description</td>
-                            <td>
-                                <button @onclick="() => NavigateToEdit(operationType.Id)">Edit</button>
-                                <button @onclick="() => DeleteOperationType(operationType.Id)">Delete</button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            @if (!string.IsNullOrEmpty(resultMessage))
-            {    
-            <div class="alert alert-success">@resultMessage</div>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 20px" OnClick="NavigateToCreate">Create</MudButton>
+
+            <MudButton @onclick="@(() => Snackbar.Add("Test Snackbar", Severity.Success))" Variant="Variant.Filled" Color="Color.Primary">       @* 2 DELETE !!!!!!!!!!!!!! *@
+                Open Simple Dialog
+            </MudButton>
+
+            <MudTable Items="_operationTypes" Hover="true">
+                <HeaderContent>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Income/Expense</MudTh>
+                    <MudTh>Description</MudTh>
+                    <MudTh>Action</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Name">@context.Name</MudTd>
+                    <MudTd DataLabel="Income/Expense">@(@context.IsIncome ? "Income" : "Expense")</MudTd>
+                    <MudTd DataLabel="Description">@context.Description</MudTd>
+                    <MudTd DataLabel="Action">
+                        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick="@(() => NavigateToEdit(@context.Id))">Edit</MudButton>
+                        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => ConfirmDelete(@context.Id))">Delete</MudButton>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+            
+            @if (!string.IsNullOrEmpty(_resultMessage))
+            {
+                Snackbar.Add(_resultMessage, Severity.Success);
             }
         }
 }
 else
 {
-    <p><em>@errorMessage</em></p>
+    <p><em>@_errorMessage</em></p>
 }
 
 @code {
-    private IEnumerable<OperationTypeViewModelCommon> operationTypes;
+    private IEnumerable<OperationTypeViewModelCommon> _operationTypes;
 
-    private string errorMessage;
-    private string resultMessage;
+    private string _errorMessage;
+    private string _resultMessage;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            operationTypes = await OperationTypeService.GetOperationTypes();
+            _operationTypes = await OperationTypeService.GetOperationTypes();
         }
         catch (Exception ex)
         {
-            errorMessage = ex.Message;
+            _errorMessage = ex.Message;
         }
     }
 
@@ -85,12 +87,40 @@ else
     {
         try
         {
-            resultMessage = await OperationTypeService.DeleteOperationType(id);
-            operationTypes = await OperationTypeService.GetOperationTypes();
+            _resultMessage = await OperationTypeService.DeleteOperationType(id);
+            _operationTypes = await OperationTypeService.GetOperationTypes();
         }
         catch (Exception ex)
         {
-            errorMessage = ex.Message;
+            _errorMessage = ex.Message;
         }
     }
+
+    private async Task ConfirmDelete(int id)
+    {
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            DisableBackdropClick = true
+        };
+
+        var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Confirm Delete", options);
+        
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await DeleteOperationType(id);
+        }
+    }
+
+    private async Task OpenDialogAsync()                                    // 2 DELETE !!!
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Simple Dialog", options);
+    }
+
+
 }
