@@ -1,4 +1,5 @@
-﻿@using Services
+﻿@using Microsoft.AspNetCore.WebUtilities
+@using Services
 @using Task11_Common.ViewModels
 @using Task11_BlazorApp.Components.Pages
 
@@ -14,45 +15,48 @@
 
 @if (string.IsNullOrEmpty(_errorMessage))
 {
-        if (_operationTypes == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 20px" OnClick="NavigateToCreate">Create</MudButton>
+    if (_operationTypes == null)
+    {
+        @* <p><em>Loading...</em></p> *@
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    }
+    else
+    {
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 20px" OnClick="NavigateToCreate">Create</MudButton>
 
-            <MudButton @onclick="@(() => Snackbar.Add("Test Snackbar", Severity.Success))" Variant="Variant.Filled" Color="Color.Primary">       @* 2 DELETE !!!!!!!!!!!!!! *@
-                Open Simple Dialog
-            </MudButton>
+        @* <MudButton @onclick="@(() => Snackbar.Add("Test Snackbar", Severity.Success))" Variant="Variant.Filled" Color="Color.Primary">       2 DELETE !!!!!!!!!!!!!!
+            Open Simple Dialog
+        </MudButton> *@
 
-            <MudTable Items="_operationTypes" Hover="true">
-                <HeaderContent>
-                    <MudTh>Name</MudTh>
-                    <MudTh>Income/Expense</MudTh>
-                    <MudTh>Description</MudTh>
-                    <MudTh>Action</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Name">@context.Name</MudTd>
-                    <MudTd DataLabel="Income/Expense">@(@context.IsIncome ? "Income" : "Expense")</MudTd>
-                    <MudTd DataLabel="Description">@context.Description</MudTd>
-                    <MudTd DataLabel="Action">
-                        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick="@(() => NavigateToEdit(@context.Id))">Edit</MudButton>
-                        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => ConfirmDelete(@context.Id))">Delete</MudButton>
-                    </MudTd>
-                </RowTemplate>
-            </MudTable>
+        <MudTable Items="_operationTypes" Hover="true">
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Income/Expense</MudTh>
+                <MudTh>Description</MudTh>
+                <MudTh>Action</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Income/Expense">@(@context.IsIncome ? "Income" : "Expense")</MudTd>
+                <MudTd DataLabel="Description">@context.Description</MudTd>
+                <MudTd DataLabel="Action">
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick="@(() => NavigateToEdit(@context.Id))">Edit</MudButton>
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => ConfirmDelete(@context.Id))">Delete</MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
             
-            @if (!string.IsNullOrEmpty(_resultMessage))
-            {
-                Snackbar.Add(_resultMessage, Severity.Success);
-            }
+        @if (!string.IsNullOrEmpty(_resultMessage))
+        {
+            Snackbar.Add(_resultMessage, Severity.Success);
+            _resultMessage = "";
         }
+    }
 }
 else
 {
-    <p><em>@_errorMessage</em></p>
+    Snackbar.Add(_errorMessage, Severity.Error);
+    _errorMessage = "";
 }
 
 @code {
@@ -63,6 +67,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("message", out var message))
+        {
+            _resultMessage = message;
+        }
+
         try
         {
             _operationTypes = await OperationTypeService.GetOperationTypes();
@@ -75,12 +85,12 @@ else
 
     private void NavigateToCreate()
     {
-        NavigationManager.NavigateTo("/operationtypes/create");
+        NavigationManager.NavigateTo($"/operationtypes/create?message={_resultMessage}");
     }
 
     private void NavigateToEdit(int id)
     {
-        NavigationManager.NavigateTo($"operationtypes/edit/{id}");    
+        NavigationManager.NavigateTo($"operationtypes/edit/{id}?message={_resultMessage}");
     }
 
     private async Task DeleteOperationType(int id)
@@ -121,6 +131,4 @@ else
 
         var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Simple Dialog", options);
     }
-
-
 }

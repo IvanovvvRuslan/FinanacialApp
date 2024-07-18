@@ -49,7 +49,7 @@ namespace Task11.Controllers
             
             await _operationTypeService.Create(operationType);
             
-            return Ok();
+            return Ok("Operation Type created");
         }
 
         //POST: OperationTypeController/Edit/5
@@ -59,7 +59,7 @@ namespace Task11.Controllers
             try
             {
                 await _operationTypeService.Update(id, operationType);
-                return Ok("Operation Type edited");
+                return Ok("Operation Type updated");
             }
             catch (NotFoundException ex)
             {

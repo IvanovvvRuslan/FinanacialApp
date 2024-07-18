@@ -9,9 +9,10 @@
 
 <MudText Typo="Typo.h4" Style="margin-bottom: 20px; margin-top: 20px;">Create Operation Type</MudText>
 
-@if (string.IsNullOrEmpty(errorMessage))
+@if (string.IsNullOrEmpty(_errorMessage))
 {
     <EditForm Model="@operationType" OnValidSubmit="AddOperationType">
+        <DataAnnotationsValidator />
         <ValidationSummary />
          <MudGrid>
             <MudItem xs="1" Style="display: flex; align-items: center">
@@ -20,7 +21,7 @@
                 </MudText>
             </MudItem>
             <MudItem xs="2">
-                    <MudTextField @bind-Value="@operationType.Name" Label="Enter a name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    <MudTextField @bind-Value="@operationType.Name" Label="Enter a name" Required="true" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
             </MudItem>
         </MudGrid>
 
@@ -31,7 +32,7 @@
                 </MudText>
             </MudItem>
             <MudItem xs="2">
-                <MudSelect T="bool" @bind-Value="operationType.IsIncome" Margin="Margin.Dense" Label="Select Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                <MudSelect T="bool" @bind-Value="operationType.IsIncome" Placeholder="Please Select" Margin="Margin.Dense" Label="Select Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
                     <MudSelectItem Value="true">Income</MudSelectItem>
                     <MudSelectItem Value="false">Expense</MudSelectItem>
                 </MudSelect>
@@ -51,19 +52,14 @@
             </MudItem>
         </MudGrid>
 
-        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="margin-top: 30px;" OnClick="AddOperationType">Create</MudButton>
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined" Color="Color.Primary" Style="margin-top: 30px;">Create</MudButton>
         <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Style="margin-top: 30px;" OnClick="Cancel">Cancel</MudButton>
-
-        @if (!string.IsNullOrEmpty(resultMessage))
-        {
-            <div class="alert alert-success">@resultMessage</div>
-        }
     </EditForm>   
 }
 
 @code {
-    private string errorMessage;
-    private string resultMessage;
+    private string _errorMessage;
+    private string _resultMessage;
     private OperationTypeViewModelCommon operationType = new OperationTypeViewModelCommon();
 
     public string IsIncomeValue
@@ -76,12 +72,12 @@
     {
         try
         {
-            resultMessage = await OperationTypeService.CreateOperationType(operationType);
-            NavigationManager.NavigateTo("/operationtypes");
+            _resultMessage = await OperationTypeService.CreateOperationType(operationType);
+            NavigationManager.NavigateTo($"/operationtypes?message={_resultMessage}");
         }
         catch (Exception ex)
         {
-            errorMessage = ex.Message;
+            _errorMessage = ex.Message;
         }
         
     }
