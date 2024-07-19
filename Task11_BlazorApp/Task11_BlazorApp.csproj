@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Task11_Common\Task11_Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\Pages\OperationTypePages\" />
+  </ItemGroup>
+
 </Project>

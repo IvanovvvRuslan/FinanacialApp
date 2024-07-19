@@ -15,48 +15,53 @@
     if (operationType == null)
     {
         <p><em>Loading...</em></p>
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     }
     else
     {
-        <MudGrid>
-            <MudItem xs="1" Style="display: flex; align-items: center">
-                <MudText>
-                    New name:
-                </MudText>
-            </MudItem>
-            <MudItem xs="2">
-                <MudTextField @bind-Value="@operationType.Name" Label="Enter a new name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-            </MudItem>
-        </MudGrid>
+        <EditForm Model="@operationType" OnValidSubmit="UpdateOperationType">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <MudGrid>
+                <MudItem xs="1" Style="display: flex; align-items: center">
+                    <MudText>
+                        New name:
+                    </MudText>
+                </MudItem>
+                <MudItem xs="2">
+                    <MudTextField @bind-Value="@operationType.Name" Label="Enter a new name" Required="true" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+            </MudGrid>
 
-        <MudGrid>
-            <MudItem xs="1" style="display: flex; align-items: center">
-                <MudText>
-                    Income/Expense:
-                </MudText>
-            </MudItem>
-            <MudItem xs="2">
-                <MudSelect T="bool" @bind-Value="operationType.IsIncome" Margin="Margin.Dense" Label="Select Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                    <MudSelectItem Value="true">Income</MudSelectItem>
-                    <MudSelectItem Value="false">Expense</MudSelectItem>
-                </MudSelect>
-            </MudItem>
-        </MudGrid>
-        <p>Selected Value: @operationType.IsIncome</p> 
+            <MudGrid>
+                <MudItem xs="1" style="display: flex; align-items: center">
+                    <MudText>
+                        Income/Expense:
+                    </MudText>
+                </MudItem>
+                <MudItem xs="2">
+                    <MudSelect T="bool" @bind-Value="operationType.IsIncome" Margin="Margin.Dense" Label="Select Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="true">Income</MudSelectItem>
+                        <MudSelectItem Value="false">Expense</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+            <p>Selected Value: @operationType.IsIncome</p> 
 
-        <MudGrid>
-            <MudItem xs="1" Style="display: flex; align-items: center">
-                <MudText>
-                    New description:
-                </MudText>
-            </MudItem>
-            <MudItem xs="4">
-                <MudTextField @bind-Value="@operationType.Description" Label="Enter a new description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-            </MudItem>
-        </MudGrid>
+            <MudGrid>
+                <MudItem xs="1" Style="display: flex; align-items: center">
+                    <MudText>
+                        New description:
+                    </MudText>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudTextField @bind-Value="@operationType.Description" Label="Enter a new description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+            </MudGrid>
 
-        <MudButton Variant="Variant.Outlined" Style="margin-top: 30px" OnClick="UpdateOperationType">Update</MudButton>
-        <MudButton Variant="Variant.Outlined" Style="margin-top: 30px" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined" Style="margin-top: 30px">Update</MudButton>
+            <MudButton Variant="Variant.Outlined" Style="margin-top: 30px" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+        </EditForm>
     }
 }
 

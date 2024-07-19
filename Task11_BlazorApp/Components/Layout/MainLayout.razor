@@ -9,7 +9,10 @@
     <MudAppBar>
        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle"/>
        <MudText Typo="Typo.h4">Finance App</MudText>
-        <MudIconButton Icon="@Icons.Material.Filled.AttachMoney" Color="Color.Inherit"></MudIconButton>
+        <MudLink Href="/" Style="text-decoration: none;">
+            <MudIconButton Icon="@Icons.Material.Filled.AttachMoney" Color="Color.Default" Size="Size.Large"></MudIconButton>
+        </MudLink>
+
     </MudAppBar>
     <MudDrawer @bind-Open="@drawerOpen">
         <NavMenu/>
