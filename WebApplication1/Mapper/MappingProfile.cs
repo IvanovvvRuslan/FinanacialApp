@@ -21,6 +21,11 @@ namespace Task11.Mapper
             CreateMap<FinancialOperationDto, FinancialOperation>();
 
             CreateMap<OperationTypeDto, OperationTypeViewModelCommon>().ReverseMap();
+            
+            CreateMap<FinancialOperation, FinancialOperationViewModelCommon>()
+                .ForMember(dest => dest.OperationTypeName, opt => opt.MapFrom(src => src.OperationType.Name))
+                .ReverseMap();
+
         }
     }
 }

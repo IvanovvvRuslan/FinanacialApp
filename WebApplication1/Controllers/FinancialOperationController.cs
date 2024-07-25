@@ -80,7 +80,7 @@ namespace Task11.Controllers
             try
             {
                 await _financialOperationService.Delete(id);
-                return Ok();
+                return Ok("Financial operation deleted successfully");
             }
             catch (NotFoundException ex)
             {

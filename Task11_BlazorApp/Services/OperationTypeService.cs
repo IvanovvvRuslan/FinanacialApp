@@ -22,9 +22,6 @@ namespace Task11_BlazorApp.Services
 
         public async Task<IEnumerable<OperationTypeViewModelCommon>> GetOperationTypes()
         {
-            var requestUrl = _httpClient.BaseAddress + "api/operationtype";
-            Console.WriteLine($"Request URL: {requestUrl}");
-
             var operationTypes = await _httpClient.GetFromJsonAsync<IEnumerable<OperationTypeViewModelCommon>>("operationtype");
 
             return operationTypes;

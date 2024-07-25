@@ -1,0 +1,132 @@
+﻿@using Microsoft.AspNetCore.WebUtilities
+@using Services
+@using Task11_Common.ViewModels
+
+@page "/financialoperations/create/"
+
+@inject IFinancialOperationService FinancialOperationService
+@inject IOperationTypeService OperationTypeService
+@inject NavigationManager NavigationManager
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@rendermode InteractiveServer
+
+
+<MudText Typo="Typo.h4" Style="margin-bottom: 20px; margin-top: 20px;">Create Financial Operation</MudText>
+
+@if (string.IsNullOrEmpty(_errorMessage))
+{
+    <EditForm Model="@_financialOperation" OnValidSubmit="AddFinancialOperation">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        
+        <MudGrid>
+            <MudItem xs="1" Style="display: flex; align-items: center">
+                <MudText>Date:</MudText>
+            </MudItem>
+            <MudItem>
+                <MudDatePicker Label="Choose a date" @bind-Value="_financialOperation.Date" Required="true" ShowToolbar="false" OnInput="UpdateDateValue" />
+            </MudItem>
+        </MudGrid>
+        <p>Selected date: @_financialOperation.Date.ToString()</p>         @* 2 DELETE *@
+
+        <MudGrid>
+            <MudItem xs="1" Style="display: flex; align-items: center">
+                <MudText>Amount:</MudText>
+            </MudItem>
+            <MudItem xs="2">
+                <MudTextField @bind-Value="@_financialOperation.Amount" Label="Enter an amount" Required="true" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+            </MudItem>
+        </MudGrid>
+        <p>Selected Value: @_financialOperation.Amount</p>          @* 2 DELETE *@
+
+        <MudGrid>
+            <MudItem xs="1" Style="display: flex; align-items: center">
+                <MudText>
+                    Description:
+                </MudText>
+            </MudItem>
+            <MudItem xs="4">
+                <MudTextField @bind-Value="@_financialOperation.Description" Label="Enter a description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+            </MudItem>
+        </MudGrid>
+        <p>Selected Value: @_financialOperation.Description</p>          @* 2 DELETE *@
+
+        <MudGrid>
+            <MudItem xs="1" Style="display: flex; align-items: center">
+                <MudText>
+                    Operation Type:
+                </MudText>
+            </MudItem>
+            <MudSelect Label="Operation Type" @bind-Value="_financialOperation.OperationTypeId">
+                
+                @if (_operationTypeList != null)
+                {
+                    @foreach (var operationType in _operationTypeList)
+                    {
+                        <MudSelectItem Value="@operationType.Id">@operationType.Name</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </MudGrid>
+        <p>Selected Value: @_financialOperation.OperationTypeId</p>          @* 2 DELETE *@
+
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined" Color="Color.Primary" Style="margin-top: 30px;">Create</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Style="margin-top: 30px;" OnClick="Cancel">Cancel</MudButton>
+        
+    </EditForm>
+}
+
+@code {
+    private string _errorMessage;
+    private string _resultMessage;
+
+    private FinancialOperationViewModelCommon _financialOperation = new FinancialOperationViewModelCommon();
+    private IEnumerable<OperationTypeViewModelCommon> _operationTypeList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("message", out var message))
+        {
+            _resultMessage = message;
+        }
+
+        try
+        {
+            _operationTypeList = await OperationTypeService.GetOperationTypes();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private async Task AddFinancialOperation ()
+    {
+        try
+        {
+            _resultMessage = await FinancialOperationService.CreateFinancialOperation(_financialOperation);
+            NavigationManager.NavigateTo($"/financialoperations?message={_resultMessage}");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private void UpdateDateValue(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value.ToString(), out DateTime newDate))
+        {
+            _financialOperation.Date = newDate;
+            StateHasChanged();
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/operationtypes");
+    }
+}

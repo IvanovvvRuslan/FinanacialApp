@@ -1,0 +1,129 @@
+﻿@using Microsoft.AspNetCore.WebUtilities
+@using Services
+@using Task11_Common.ViewModels
+@using Task11_BlazorApp.Components.Pages
+
+
+@page "/operationtypes"
+@inject IOperationTypeService OperationTypeService
+@inject NavigationManager NavigationManager
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@rendermode InteractiveServer
+
+<MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 20px;">Operation Types</MudText>
+
+@if (string.IsNullOrEmpty(_errorMessage))
+{
+    if (_operationTypes == null)
+    {
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    }
+    else
+    {
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 20px" OnClick="NavigateToCreate">Create</MudButton>
+
+        <MudTable Items="_operationTypes" Hover="true">
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Income/Expense</MudTh>
+                <MudTh>Description</MudTh>
+                <MudTh>Action</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Income/Expense">@(@context.IsIncome ? "Income" : "Expense")</MudTd>
+                <MudTd DataLabel="Description">@context.Description</MudTd>
+                <MudTd DataLabel="Action">
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick="@(() => NavigateToEdit(@context.Id))">Edit</MudButton>
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => ConfirmDelete(@context.Id))">Delete</MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+            
+        @if (!string.IsNullOrEmpty(_resultMessage))
+        {
+            Snackbar.Add(_resultMessage, Severity.Success);
+            _resultMessage = "";
+        }
+    }
+}
+else
+{
+    Snackbar.Add(_errorMessage, Severity.Error);
+    _errorMessage = "";
+}
+
+@code {
+    private IEnumerable<OperationTypeViewModelCommon> _operationTypes;
+
+    private string _errorMessage;
+    private string _resultMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("message", out var message))
+        {
+            _resultMessage = message;
+        }
+
+        try
+        {
+            _operationTypes = await OperationTypeService.GetOperationTypes();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private void NavigateToCreate()
+    {
+        NavigationManager.NavigateTo($"/operationtypes/create?message={_resultMessage}");
+    }
+
+    private void NavigateToEdit(int id)
+    {
+        NavigationManager.NavigateTo($"operationtypes/edit/{id}?message={_resultMessage}");
+    }
+
+    private async Task DeleteOperationType(int id)
+    {
+        try
+        {
+            _resultMessage = await OperationTypeService.DeleteOperationType(id);
+            _operationTypes = await OperationTypeService.GetOperationTypes();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private async Task ConfirmDelete(int id)
+    {
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            DisableBackdropClick = true
+        };
+
+        var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Confirm Delete", options);
+        
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await DeleteOperationType(id);
+        }
+    }
+
+    private async Task OpenDialogAsync()                                    // 2 DELETE !!!
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Simple Dialog", options);
+    }
+}

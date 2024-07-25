@@ -11,7 +11,7 @@
 
 @if (string.IsNullOrEmpty(_errorMessage))
 {
-    <EditForm Model="@operationType" OnValidSubmit="AddOperationType">
+    <EditForm Model="@_operationType" OnValidSubmit="AddOperationType">
         <DataAnnotationsValidator />
         <ValidationSummary />
          <MudGrid>
@@ -21,9 +21,10 @@
                 </MudText>
             </MudItem>
             <MudItem xs="2">
-                    <MudTextField @bind-Value="@operationType.Name" Label="Enter a name" Required="true" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    <MudTextField @bind-Value="@_operationType.Name" Label="Enter a name" Required="true" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
             </MudItem>
         </MudGrid>
+        <p>Selected Value: @_operationType.Name</p>          @* 2 DELETE *@
 
         <MudGrid>
             <MudItem xs="1" Style="display: flex; align-items: center">
@@ -32,14 +33,14 @@
                 </MudText>
             </MudItem>
             <MudItem xs="2">
-                <MudSelect T="bool" @bind-Value="operationType.IsIncome" Placeholder="Please Select" Margin="Margin.Dense" Label="Select Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                <MudSelect T="bool" @bind-Value="_operationType.IsIncome" Placeholder="Please Select" Margin="Margin.Dense" Label="Select Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
                     <MudSelectItem Value="true">Income</MudSelectItem>
                     <MudSelectItem Value="false">Expense</MudSelectItem>
                 </MudSelect>
             </MudItem>
         </MudGrid>
 
-        <p>Selected Value: @operationType.IsIncome</p>
+        <p>Selected Value: @_operationType.IsIncome</p>          @* 2 DELETE *@
         
         <MudGrid>
             <MudItem xs="1" Style="display: flex; align-items: center">
@@ -48,9 +49,10 @@
                 </MudText>
             </MudItem>
             <MudItem xs="4">
-                <MudTextField @bind-Value="@operationType.Description" Label="Enter a description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                <MudTextField @bind-Value="@_operationType.Description" Label="Enter a description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
             </MudItem>
         </MudGrid>
+        <p>Selected Value: @_operationType.Description</p>          @* 2 DELETE *@
 
         <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined" Color="Color.Primary" Style="margin-top: 30px;">Create</MudButton>
         <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Style="margin-top: 30px;" OnClick="Cancel">Cancel</MudButton>
@@ -60,19 +62,19 @@
 @code {
     private string _errorMessage;
     private string _resultMessage;
-    private OperationTypeViewModelCommon operationType = new OperationTypeViewModelCommon();
+    private OperationTypeViewModelCommon _operationType = new OperationTypeViewModelCommon();
 
     public string IsIncomeValue
     {
-        get => operationType.IsIncome.ToString();
-        set => operationType.IsIncome = bool.Parse(value);
+        get => _operationType.IsIncome.ToString();
+        set => _operationType.IsIncome = bool.Parse(value);
     }
 
     private async Task AddOperationType()
     {
         try
         {
-            _resultMessage = await OperationTypeService.CreateOperationType(operationType);
+            _resultMessage = await OperationTypeService.CreateOperationType(_operationType);
             NavigationManager.NavigateTo($"/operationtypes?message={_resultMessage}");
         }
         catch (Exception ex)
@@ -82,17 +84,17 @@
         
     }
 
-    private void HandleChange(ChangeEventArgs e)
-    {
-        if (e.Value.ToString() == "true")
-        {
-            operationType.IsIncome = true;
-        }
-        else
-        {
-            operationType.IsIncome = false;
-        }
-    }
+    // private void HandleChange(ChangeEventArgs e)
+    // {
+    //     if (e.Value.ToString() == "true")
+    //     {
+    //         _operationType.IsIncome = true;
+    //     }
+    //     else
+    //     {
+    //         _operationType.IsIncome = false;
+    //     }
+    // }
 
     private void Cancel()
     {

@@ -1,21 +1,19 @@
 ﻿@using Microsoft.AspNetCore.WebUtilities
 @using Services
 @using Task11_Common.ViewModels
-@using Task11_BlazorApp.Components.Pages
 
-
-@page "/operationtypes"
-@inject IOperationTypeService OperationTypeService
+@page "/financialoperations"
+@inject IFinancialOperationService FinancialOperationService
 @inject NavigationManager NavigationManager
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @rendermode InteractiveServer
 
-<MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 20px;">Operation Types</MudText>
+<MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 20px;">Financial Operations</MudText>
 
 @if (string.IsNullOrEmpty(_errorMessage))
 {
-    if (_operationTypes == null)
+    if (_financialOperations == null)
     {
         <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     }
@@ -23,28 +21,28 @@
     {
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 20px" OnClick="NavigateToCreate">Create</MudButton>
 
-        @* <MudButton @onclick="@(() => Snackbar.Add("Test Snackbar", Severity.Success))" Variant="Variant.Filled" Color="Color.Primary">       2 DELETE !!!!!!!!!!!!!!
-            Open Simple Dialog
-        </MudButton> *@
-
-        <MudTable Items="_operationTypes" Hover="true">
+        <MudTable Items="_financialOperations" Hover="true">
             <HeaderContent>
-                <MudTh>Name</MudTh>
-                <MudTh>Income/Expense</MudTh>
+                <MudTh>Id</MudTh>
+                <MudTh>Date</MudTh>
+                <MudTh>Amount</MudTh>
                 <MudTh>Description</MudTh>
+                <MudTh>OperationType</MudTh>
                 <MudTh>Action</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Name">@context.Name</MudTd>
-                <MudTd DataLabel="Income/Expense">@(@context.IsIncome ? "Income" : "Expense")</MudTd>
+                <MudTd DataLabel="Id">@context.Id</MudTd>
+                <MudTd DataLabel="Date">@context.Date.ToString("dd.MM.yyyy")</MudTd>
+                <MudTd DataLabel="Amount">@context.Amount</MudTd>
                 <MudTd DataLabel="Description">@context.Description</MudTd>
+                <MudTd DataLabel="Operation Type">@context.OperationTypeName</MudTd>
                 <MudTd DataLabel="Action">
                     <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick="@(() => NavigateToEdit(@context.Id))">Edit</MudButton>
                     <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => ConfirmDelete(@context.Id))">Delete</MudButton>
                 </MudTd>
             </RowTemplate>
         </MudTable>
-            
+
         @if (!string.IsNullOrEmpty(_resultMessage))
         {
             Snackbar.Add(_resultMessage, Severity.Success);
@@ -52,14 +50,9 @@
         }
     }
 }
-else
-{
-    Snackbar.Add(_errorMessage, Severity.Error);
-    _errorMessage = "";
-}
 
 @code {
-    private IEnumerable<OperationTypeViewModelCommon> _operationTypes;
+    private IEnumerable<FinancialOperationViewModelCommon> _financialOperations;
 
     private string _errorMessage;
     private string _resultMessage;
@@ -74,7 +67,7 @@ else
 
         try
         {
-            _operationTypes = await OperationTypeService.GetOperationTypes();
+            _financialOperations = await FinancialOperationService.GetFinancialOperations();
         }
         catch (Exception ex)
         {
@@ -84,28 +77,28 @@ else
 
     private void NavigateToCreate()
     {
-        NavigationManager.NavigateTo($"/operationtypes/create?message={_resultMessage}");
+        NavigationManager.NavigateTo($"/financialoperations/create?message={_resultMessage}");    
     }
 
     private void NavigateToEdit(int id)
     {
-        NavigationManager.NavigateTo($"operationtypes/edit/{id}?message={_resultMessage}");
+        NavigationManager.NavigateTo($"/financialoperations/edit/{id}?message={_resultMessage}");
     }
 
-    private async Task DeleteOperationType(int id)
+    private async Task DeleteFinancialOperation(int id)
     {
         try
         {
-            _resultMessage = await OperationTypeService.DeleteOperationType(id);
-            _operationTypes = await OperationTypeService.GetOperationTypes();
+            _resultMessage = await FinancialOperationService.DeleteFinancialOperation(id);
+            _financialOperations = await FinancialOperationService.GetFinancialOperations();
         }
         catch (Exception ex)
         {
             _errorMessage = ex.Message;
-        }
+        }    
     }
 
-    private async Task ConfirmDelete(int id)
+    private async Task ConfirmDelete (int id)
     {
         var options = new DialogOptions
         {
@@ -115,19 +108,12 @@ else
         };
 
         var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Confirm Delete", options);
-        
+
         var result = await dialog.Result;
 
         if (!result.Cancelled)
         {
-            await DeleteOperationType(id);
+            await DeleteFinancialOperation(id);
         }
-    }
-
-    private async Task OpenDialogAsync()                                    // 2 DELETE !!!
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Simple Dialog", options);
     }
 }
