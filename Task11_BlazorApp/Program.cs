@@ -2,6 +2,9 @@ using Task11_BlazorApp.Components;
 using Task11_BlazorApp.Services;
 using MudBlazor.Services;
 using MudBlazor;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+
 
 namespace Task11_BlazorApp
 {
@@ -37,6 +40,17 @@ namespace Task11_BlazorApp
             builder.Services.AddScoped<IFinancialOperationService, FinancialOperationService>();
 
             var app = builder.Build();
+
+            var cultureInfo = new CultureInfo("en-US");
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(cultureInfo),
+                SupportedCultures = new[] { cultureInfo },
+                SupportedUICultures = new[] { cultureInfo }
+            });
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

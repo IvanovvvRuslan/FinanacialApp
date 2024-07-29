@@ -12,15 +12,17 @@ namespace Task11_Common.ViewModels
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         [Required(ErrorMessage = "Date is required")]
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
 
         [Required(ErrorMessage = "Amount is required")]
-        [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Enter a valid amount")]
         public decimal Amount { get; set; }
         public string? Description { get; set; }
 
-        public int OperationTypeId { get; set; }
+        [Required(ErrorMessage = "Operation Type is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select an operation type")]
+        public int OperationTypeId { get; set; } = 0;
 
         public OperationTypeViewModelCommon OperationTypeViewModelCommon { get; set; }
 

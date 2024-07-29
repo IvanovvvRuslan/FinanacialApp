@@ -51,7 +51,7 @@ namespace Task11.Controllers
 
             await _financialOperationService.Create(financialOperation);
 
-            return Ok();
+            return Ok("Financial operation created");
         }
 
         // GET: FinancialOperationController/Edit/5
@@ -61,7 +61,7 @@ namespace Task11.Controllers
             try
             {
                 await _financialOperationService.Update(id, financialOperation);
-                return Ok();
+                return Ok("Financial operation updated");
             }
             catch (NotFoundException ex)
             {

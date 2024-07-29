@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.WebUtilities
 @using Services
 @using Task11_Common.ViewModels
+@using System.Globalization
 
 @page "/financialoperations/create/"
 
@@ -25,21 +26,20 @@
                 <MudText>Date:</MudText>
             </MudItem>
             <MudItem>
-                <MudDatePicker Label="Choose a date" @bind-Value="_financialOperation.Date" Required="true" ShowToolbar="false" OnInput="UpdateDateValue" />
+                <MudDatePicker Label="Choose a date" @bind-Date="_financialOperation.Date" Required="true" ShowToolbar="false" />
             </MudItem>
         </MudGrid>
-        <p>Selected date: @_financialOperation.Date.ToString()</p>         @* 2 DELETE *@
-
+        <p>Selected fin date: @_financialOperation.Date</p>         @* 2 DELETE *@
+        
         <MudGrid>
             <MudItem xs="1" Style="display: flex; align-items: center">
                 <MudText>Amount:</MudText>
             </MudItem>
             <MudItem xs="2">
-                <MudTextField @bind-Value="@_financialOperation.Amount" Label="Enter an amount" Required="true" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                <MudNumericField Immediate="true" Label="Enter an amount" Format="N2" Culture="@_en" T="decimal" @bind-Value="@_financialOperation.Amount" HelperText="@_financialOperation.Amount.ToString()" />
             </MudItem>
         </MudGrid>
-        <p>Selected Value: @_financialOperation.Amount</p>          @* 2 DELETE *@
-
+        
         <MudGrid>
             <MudItem xs="1" Style="display: flex; align-items: center">
                 <MudText>
@@ -58,16 +58,18 @@
                     Operation Type:
                 </MudText>
             </MudItem>
-            <MudSelect Label="Operation Type" @bind-Value="_financialOperation.OperationTypeId">
-                
-                @if (_operationTypeList != null)
-                {
-                    @foreach (var operationType in _operationTypeList)
+            <MudItem xs="2">
+                <MudSelect Label="Select an operation type" @bind-Value="_financialOperation.OperationTypeId" Required="true">
+                    <MudSelectItem Value="0" Disabled>Please select</MudSelectItem>
+                    @if (_operationTypeList != null)
                     {
-                        <MudSelectItem Value="@operationType.Id">@operationType.Name</MudSelectItem>
+                        @foreach (var operationType in _operationTypeList)
+                        {
+                            <MudSelectItem Value="@operationType.Id">@operationType.Name</MudSelectItem>
+                        }
                     }
-                }
-            </MudSelect>
+                </MudSelect>
+            </MudItem>
         </MudGrid>
         <p>Selected Value: @_financialOperation.OperationTypeId</p>          @* 2 DELETE *@
 
@@ -84,6 +86,8 @@
     private FinancialOperationViewModelCommon _financialOperation = new FinancialOperationViewModelCommon();
     private IEnumerable<OperationTypeViewModelCommon> _operationTypeList;
 
+    public CultureInfo _en = CultureInfo.GetCultureInfo("en-US");
+
     protected override async Task OnInitializedAsync()
     {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
@@ -95,7 +99,6 @@
         try
         {
             _operationTypeList = await OperationTypeService.GetOperationTypes();
-            StateHasChanged();
         }
         catch (Exception ex)
         {
@@ -127,6 +130,6 @@
 
     private void Cancel()
     {
-        NavigationManager.NavigateTo("/operationtypes");
+        NavigationManager.NavigateTo("/financialoperations");
     }
 }
