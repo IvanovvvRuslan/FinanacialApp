@@ -23,7 +23,6 @@
 
         <MudTable Items="_financialOperations" Hover="true">
             <HeaderContent>
-                <MudTh>Id</MudTh>
                 <MudTh>Date</MudTh>
                 <MudTh>Amount</MudTh>
                 <MudTh>Description</MudTh>
@@ -31,7 +30,6 @@
                 <MudTh>Action</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Id">@context.Id</MudTd>
                 <MudTd DataLabel="Date">@context.Date?.ToString("dd.MM.yyyy")</MudTd>
                 <MudTd DataLabel="Amount">@context.Amount</MudTd>
                 <MudTd DataLabel="Description">@context.Description</MudTd>

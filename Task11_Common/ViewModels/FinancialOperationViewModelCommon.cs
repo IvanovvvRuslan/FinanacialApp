@@ -22,7 +22,7 @@ namespace Task11_Common.ViewModels
 
         [Required(ErrorMessage = "Operation Type is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Please select an operation type")]
-        public int OperationTypeId { get; set; } = 0;
+        public int OperationTypeId { get; set; }
 
         public OperationTypeViewModelCommon OperationTypeViewModelCommon { get; set; }
 

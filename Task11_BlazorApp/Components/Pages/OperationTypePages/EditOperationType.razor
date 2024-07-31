@@ -5,21 +5,20 @@
 
 @inject IOperationTypeService OperationTypeService
 @inject NavigationManager NavigationManager
-@inject ISnackbar Snackbar
 @rendermode InteractiveServer
 
 <MudText Typo="Typo.h4" Style="margin-bottom: 20px; margin-top: 20px">Edit Operation Type</MudText>
 
 @if (string.IsNullOrEmpty(_errorMessage))
 {
-    if (operationType == null)
+    if (_operationType == null)
     {
         <p><em>Loading...</em></p>
         <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     }
     else
     {
-        <EditForm Model="@operationType" OnValidSubmit="UpdateOperationType">
+        <EditForm Model="@_operationType" OnValidSubmit="UpdateOperationType">
             <DataAnnotationsValidator />
             <ValidationSummary />
             <MudGrid>
@@ -29,7 +28,7 @@
                     </MudText>
                 </MudItem>
                 <MudItem xs="2">
-                    <MudTextField @bind-Value="@operationType.Name" Label="Enter a new name" Required="true" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    <MudTextField @bind-Value="@_operationType.Name" Label="Enter a new name" Required="true" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                 </MudItem>
             </MudGrid>
 
@@ -40,13 +39,13 @@
                     </MudText>
                 </MudItem>
                 <MudItem xs="2">
-                    <MudSelect T="bool" @bind-Value="operationType.IsIncome" Margin="Margin.Dense" Label="Select Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect T="bool" @bind-Value="_operationType.IsIncome" Margin="Margin.Dense" Label="Select Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
                         <MudSelectItem Value="true">Income</MudSelectItem>
                         <MudSelectItem Value="false">Expense</MudSelectItem>
                     </MudSelect>
                 </MudItem>
             </MudGrid>
-            <p>Selected Value: @operationType.IsIncome</p> 
+            <p>Selected Value: @_operationType.IsIncome</p> 
 
             <MudGrid>
                 <MudItem xs="1" Style="display: flex; align-items: center">
@@ -55,7 +54,7 @@
                     </MudText>
                 </MudItem>
                 <MudItem xs="4">
-                    <MudTextField @bind-Value="@operationType.Description" Label="Enter a new description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    <MudTextField @bind-Value="@_operationType.Description" Label="Enter a new description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                 </MudItem>
             </MudGrid>
 
@@ -72,20 +71,20 @@
     private string _errorMessage;
     private string _resultMessage;
 
-    private string selectedValue;
-    public string IsIncomeValue 
-    { 
-        get => operationType.IsIncome.ToString(); 
-        set => operationType.IsIncome = bool.Parse(value); 
-    }
+    // private string selectedValue;
+    // public string IsIncomeValue 
+    // { 
+    //     get => operationType.IsIncome.ToString(); 
+    //     set => operationType.IsIncome = bool.Parse(value); 
+    // }
 
-    private OperationTypeViewModelCommon operationType;
+    private OperationTypeViewModelCommon _operationType;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            operationType = await OperationTypeService.GetOperationTypeById(Id);
+            _operationType = await OperationTypeService.GetOperationTypeById(Id);
         }
         catch (Exception ex)
         {
@@ -95,21 +94,21 @@
 
     private async Task UpdateOperationType()
     {
-        _resultMessage = await OperationTypeService.UpdateOperationType(operationType.Id, operationType);
+        _resultMessage = await OperationTypeService.UpdateOperationType(_operationType.Id, _operationType);
         NavigationManager.NavigateTo($"/operationtypes?message={_resultMessage}");
     }
 
-    private void HandleChange(ChangeEventArgs e)
-    {
-        if (e.Value.ToString() == "true")
-        {
-            operationType.IsIncome = true;
-        }
-        else
-        {
-            operationType.IsIncome = false;
-        }
-    }
+    // private void HandleChange(ChangeEventArgs e)
+    // {
+    //     if (e.Value.ToString() == "true")
+    //     {
+    //         _operationType.IsIncome = true;
+    //     }
+    //     else
+    //     {
+    //         _operationType.IsIncome = false;
+    //     }
+    // }
 
     private void Cancel()
     {

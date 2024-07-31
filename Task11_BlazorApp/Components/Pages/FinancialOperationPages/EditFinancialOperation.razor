@@ -1,0 +1,121 @@
+﻿@using Services
+@using Task11_Common.ViewModels
+@using System.Globalization
+
+@page "/financialoperations/edit/{id:int}"
+
+@inject IFinancialOperationService FinancialOperationService
+@inject IOperationTypeService OperationTypeService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<MudText Typo="Typo.h4" Style="margin-bottom: 20px; margin-top: 20px">Edit Financial Operation</MudText>
+
+@if (string.IsNullOrEmpty(_errorMessage))
+{
+    if (_financialOperation == null)
+    {
+        <p><em>Loading...</em></p>
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    }
+    else
+    {
+        <EditForm Model="@_financialOperation" OnValidSubmit="UpdateFinancialOperation">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <MudGrid>
+                <MudItem xs="1" Style="display: flex; align-items: center">
+                    <MudText>Date:</MudText>
+                </MudItem>
+                <MudItem>
+                    <MudDatePicker Label="Choose a new date" @bind-Date="_financialOperation.Date" Required="true" ShowToolbar="false" />
+                </MudItem>
+            </MudGrid>
+            <p>Selected fin date: @_financialOperation.Date</p>         @* 2 DELETE *@
+
+            <MudGrid>
+                <MudItem xs="1" Style="display: flex; align-items: center">
+                    <MudText>Amount:</MudText>
+                </MudItem>
+                <MudItem xs="2">
+                    <MudNumericField Immediate="true" Label="Enter a new amount" Format="N2" Culture="@_en" T="decimal" @bind-Value="@_financialOperation.Amount" HelperText="@_financialOperation.Amount.ToString()" />
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid>
+                <MudItem xs="1" Style="display: flex; align-items: center">
+                    <MudText>
+                        Description:
+                    </MudText>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudTextField @bind-Value="@_financialOperation.Description" Label="Enter a description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+            </MudGrid>
+            <p>Selected Value: @_financialOperation.Description</p>          @* 2 DELETE *@
+
+            <MudGrid>
+                <MudItem xs="1" Style="display: flex; align-items: center">
+                    <MudText>
+                        Operation Type:
+                    </MudText>
+                </MudItem>
+                <MudItem xs="2">
+                    <MudSelect Label="Select a new operation type" @bind-Value="_financialOperation.OperationTypeId" Required="true">
+                        @* <MudSelectItem Value="0" Disabled>Please select</MudSelectItem> *@
+                        @if (_operationTypeList != null)
+                        {
+                            @foreach (var operationType in _operationTypeList)
+                            {
+                                <MudSelectItem Value="@operationType.Id">@operationType.Name</MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+            <p>Selected Value: @_financialOperation.OperationTypeId</p>          @* 2 DELETE *@
+
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined" Color="Color.Primary" Style="margin-top: 30px;">Update</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Style="margin-top: 30px;" OnClick="Cancel">Cancel</MudButton>
+
+        </EditForm>
+    }
+
+}
+
+@code {
+    [Parameter] 
+    public int Id { get; set; }
+    private string _errorMessage;
+    private string _resultMessage;
+
+    private FinancialOperationViewModelCommon _financialOperation;
+    private IEnumerable<OperationTypeViewModelCommon> _operationTypeList;
+
+    public CultureInfo _en = CultureInfo.GetCultureInfo("en-US");
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _financialOperation = await FinancialOperationService.GetFinancialOperationById(Id);
+            _operationTypeList = await OperationTypeService.GetOperationTypes();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private async Task UpdateFinancialOperation()
+    {
+        _resultMessage = await FinancialOperationService.UpdateFinancialOperation(_financialOperation.Id, _financialOperation);
+        NavigationManager.NavigateTo($"/financialoperations?message={_resultMessage}");
+    }
+
+    private void Cancel ()
+    {
+        NavigationManager.NavigateTo("/financialoperations");
+    }
+}

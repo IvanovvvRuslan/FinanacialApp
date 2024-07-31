@@ -13,6 +13,14 @@ namespace Task11.ViewModels
         [JsonIgnore]
         public OperationTypeViewModel OperationType { get; set; }
 
+        [NotMapped]
+        public int OperationTypeId
+        {
+            get 
+            {
+                return OperationType != null ? OperationType.Id : 0;
+            }
+        }
 
         [NotMapped]
         public string OperationTypeName 

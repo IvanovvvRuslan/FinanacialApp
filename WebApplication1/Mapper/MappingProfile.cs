@@ -11,7 +11,8 @@ namespace Task11.Mapper
         public MappingProfile()
         {
             CreateMap<FinancialOperation, FinancialOperationViewModel>()
-                .ForMember(dest => dest.OperationTypeName, opt => opt.MapFrom(src => src.OperationType.Name));
+                .ForMember(dest => dest.OperationTypeName, opt => opt.MapFrom(src => src.OperationType.Name))
+                .ForMember(dest => dest.OperationTypeId, opt => opt.MapFrom(src => src.OperationType.Id));
             CreateMap<OperationType, OperationTypeViewModel>();
 
             CreateMap<FinancialOperation, FinancialOperationDto>();
@@ -23,6 +24,7 @@ namespace Task11.Mapper
             CreateMap<OperationTypeDto, OperationTypeViewModelCommon>().ReverseMap();
             
             CreateMap<FinancialOperation, FinancialOperationViewModelCommon>()
+                .ForMember(dest => dest.OperationTypeId, opt => opt.MapFrom(src => src.OperationType.Id))
                 .ForMember(dest => dest.OperationTypeName, opt => opt.MapFrom(src => src.OperationType.Name))
                 .ReverseMap();
 
