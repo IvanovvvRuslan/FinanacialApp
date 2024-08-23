@@ -13,6 +13,8 @@
 
 <MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 20px;">Operation Types</MudText>
 
+<MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 20px" OnClick="NavigateToCreate">Create</MudButton>
+
 @if (string.IsNullOrEmpty(_errorMessage))
 {
     if (_operationTypes == null)
@@ -21,8 +23,6 @@
     }
     else
     {
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 20px" OnClick="NavigateToCreate">Create</MudButton>
-
         <MudTable Items="_operationTypes" Hover="true">
             <HeaderContent>
                 <MudTh>Name</MudTh>

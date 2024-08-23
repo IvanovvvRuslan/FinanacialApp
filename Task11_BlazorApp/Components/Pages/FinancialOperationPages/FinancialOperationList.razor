@@ -11,6 +11,8 @@
 
 <MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 20px;">Financial Operations</MudText>
 
+<MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 20px" OnClick="NavigateToCreate">Create</MudButton>
+
 @if (string.IsNullOrEmpty(_errorMessage))
 {
     if (_financialOperations == null)
@@ -19,16 +21,15 @@
     }
     else
     {
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 20px" OnClick="NavigateToCreate">Create</MudButton>
-
-        <MudTable Items="_financialOperations" Hover="true">
+        <MudTable Items="_financialOperations" Hover="true" FixedHeader="true">
             <HeaderContent>
                 <MudTh>Date</MudTh>
                 <MudTh>Amount</MudTh>
                 <MudTh>Description</MudTh>
-                <MudTh>OperationType</MudTh>
+                <MudTh>Operation Type</MudTh>
                 <MudTh>Action</MudTh>
             </HeaderContent>
+            
             <RowTemplate>
                 <MudTd DataLabel="Date">@context.Date?.ToString("dd.MM.yyyy")</MudTd>
                 <MudTd DataLabel="Amount">@context.Amount</MudTd>

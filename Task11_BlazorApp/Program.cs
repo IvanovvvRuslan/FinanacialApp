@@ -38,6 +38,7 @@ namespace Task11_BlazorApp
 
             builder.Services.AddScoped<IOperationTypeService, OperationTypeService>();
             builder.Services.AddScoped<IFinancialOperationService, FinancialOperationService>();
+            builder.Services.AddScoped<IReportService, ReportService>();
 
             var app = builder.Build();
 

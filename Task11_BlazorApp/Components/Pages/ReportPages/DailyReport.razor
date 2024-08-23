@@ -1,0 +1,54 @@
+﻿@using Services
+@using Task11_Common.ViewModels
+
+@page "/dailyreport"
+@inject IReportService ReportService
+@rendermode InteractiveServer
+
+<MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 10px;">Daily Report</MudText>
+
+<MudGrid>
+    <MudItem xs="2" Style="display: flex; align-items: center">
+        <MudText>Please choose a report date:</MudText>
+    </MudItem>
+    <MudItem>
+        <MudDatePicker Label="Choose a report date" @bind-Date="_date" Required="true" ShowToolbar="false" />
+    </MudItem>
+</MudGrid>
+<p>Selected date: @_date</p>         @* 2 DELETE *@
+
+<MudButton Variant="Variant.Filled" Style="margin-top: 10px; margin-bottom: 20px" OnClick="GetReport">Get Report</MudButton>
+
+<MudText Typo="Typo.h6" Style="margin-top: 10px; color: #1B5E20">Total Income: @_totalIncome</MudText>
+<MudText Typo="Typo.h6" Style="margin-bottom: 20px; color: #B71C1C">Total Expense: @_totalExpense</MudText>
+
+<MudTable Items="_financialOperations" Hover="true" FixedHeader="true">
+    <HeaderContent>
+        <MudTh>Date</MudTh>
+        <MudTh>Amount</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>Operation Type</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Date?.ToString("dd.MM.yyyy")</MudTd>
+        <MudTd DataLabel="Amount">@context.Amount</MudTd>
+        <MudTd DataLabel="Description">@context.Description</MudTd>
+        <MudTd DataLabel="Operation Type">@context.OperationTypeName</MudTd>
+    </RowTemplate>
+</MudTable>
+
+
+@code {
+    private IEnumerable<FinancialOperationViewModelCommon> _financialOperations;
+    private DateTime? _date = DateTime.Today;
+    private decimal _totalIncome;
+    private decimal _totalExpense;
+
+    private async Task GetReport()
+    {
+        var report = await ReportService.GetDailyReport(_date);
+        _financialOperations = report.Operations;
+        _totalIncome = report.TotalIncome;
+        _totalExpense = report.TotalExpense;
+    }
+}

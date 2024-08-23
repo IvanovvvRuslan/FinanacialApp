@@ -22,6 +22,11 @@
     </MudMainContent>
 </MudLayout>
 
+<MudFab Icon="@(drawerOpen ? Icons.Material.Outlined.ArrowBackIos : Icons.Material.Outlined.ArrowForwardIos)"
+        Color="Color.Primary"
+        Style="@($"position: fixed; bottom: 20px; left: {(drawerOpen ? 256 : 20)}px; z-index: 1000; transition: left 0.3s;")"
+        OnClick="DrawerToggle" />
+
 @code{
     bool drawerOpen = false;
 
