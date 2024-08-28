@@ -1,18 +1,130 @@
-﻿@using MudBlazor.Extensions
+﻿@using Services
+@using Reports
+@using Task11_Common.ViewModels
+@using MudBlazor.Extensions
 
 @page "/"
+@inject IFinancialOperationService FinancialOperationService
+@inject IReportService ReportService
+@rendermode InteractiveServer
 
-<MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">
+<MudAnimate @ref="_animate" Selector=".id1" Duration="_duration" AnimationType="_animationType" Value="_value" Delay="_delay" IterationCount="_iterationCount"
+            AnimationTiming="_animationTiming" AnimationDirection="_animationDirection" AnimationFillMode="_animationFillMode" />
+
+<MudText Class="id1" Typo="Typo.h2" Align="Align.Center" GutterBottom="true" Style="outline: none;">
     Welcome to Your Financial Dashboard
 </MudText>
-<MudText Typo="Typo.subtitle1" Align="Align.Center" GutterBottom="true">
+
+<MudText Class="id1" Typo="Typo.h5" Align="Align.Center" GutterBottom="true">
     Manage your financial operations, track expenses, and generate reports with ease.
 </MudText>
 
 
+@if (_incomeFinancialOperationsNames.Length > 0)
+{
+    <MudContainer Style="display: flex; justify-content: center; height: auto;">
+        <MudPaper Class="id1" Style="display: inline-block; margin-top: 20px">
+            <MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" 
+                       @bind-SelectedIndex="_incomeIndex"
+                       InputData="@_incomeFinancialOperationsAmounts" 
+                       InputLabels="@_incomeFinancialOperationsNames">
+                <CustomGraphics>
+                    <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="green" font-size="3">Total Income:</text>
+                    <text class="donut-inner-text" x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="green" font-size="3">@_totalIncome.ToString("# ##0.00") $</text>
+                </CustomGraphics>
+            </MudChart>
+            @if (_incomeIndex > -1)
+            {
+                <MudText Typo="Typo.body1">Operation: @(_incomeFinancialOperationsNames[_incomeIndex])</MudText>
+                <MudText Typo="Typo.body1">Amount: @(Math.Round(_incomeFinancialOperationsAmounts[_incomeIndex], 2).ToString("# ##0.00")) $</MudText>
+            }
+        </MudPaper>
+        <MudPaper Class="id1" Style="display: inline-block; margin-left: 100px; margin-top: 20px">
+            <MudChart ChartType="ChartType.Donut" Width="300px" Height="300px"
+                      @bind-SelectedIndex="_expenseIndex"
+                      InputData="@_expenseFinancialOperationsAmounts"
+                      InputLabels="@_expenseFinancialOperationsNames">
+                <CustomGraphics>
+                    <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="red" font-size="3">Total Expense:</text>
+                    <text class="donut-inner-text" x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="red" font-size="3">@_totalExpense.ToString("# ##0.00") $</text>
+                </CustomGraphics>
+            </MudChart>
+            @if (_expenseIndex > -1)
+            {
+                <MudText Typo="Typo.body1">Operation: @(_expenseFinancialOperationsNames[_expenseIndex])</MudText>
+                <MudText Typo="Typo.body1">Amount: @(Math.Round(_expenseFinancialOperationsAmounts[_expenseIndex], 2).ToString("# ##0.00")) $</MudText>
+            }
+        </MudPaper>
+    </MudContainer>
+}
 
 
 
 @code {
-   
+    private Report _report;
+    private string _errorMessage;
+    private decimal _totalIncome;
+    private decimal _totalExpense;
+    private int _incomeIndex = -1;
+    private int _expenseIndex = -1;
+
+    private double[] _incomeFinancialOperationsAmounts;
+    private string[] _incomeFinancialOperationsNames = { };
+    private double[] _expenseFinancialOperationsAmounts;
+    private string[] _expenseFinancialOperationsNames;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var startDate = DateTime.MinValue;
+            var endDate = DateTime.MaxValue;
+            _report = await ReportService.GetPeriodReport(startDate, endDate);
+            ProcessData(_report);
+            _totalIncome = _report.TotalIncome;
+            _totalExpense = _report.TotalExpense;
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private void ProcessData(Report report)
+    {
+        var incomes = new Dictionary<string, double>();
+        var expenses = new Dictionary<string, double>();
+
+        foreach (var operation in report.Operations)
+        {
+            var dictionary = operation.OperationTypeIsIncome ? incomes : expenses;
+            var operationName = operation.OperationTypeName;
+            var operationAmount = Convert.ToDouble(operation.Amount);
+
+            if (dictionary.ContainsKey(operationName))
+            {
+                dictionary[operationName] += operationAmount;
+            }
+            else
+            {
+                dictionary[operationName] = operationAmount;
+            }
+        }
+        _incomeFinancialOperationsAmounts = incomes.Values.ToArray();
+        _incomeFinancialOperationsNames = incomes.Keys.ToArray();
+        _expenseFinancialOperationsAmounts = expenses.Values.ToArray();
+        _expenseFinancialOperationsNames = expenses.Keys.ToArray();
+    }
+
+    #region ANIMATION
+    MudAnimate? _animate = new();
+    double _duration = 2;
+    double _delay = 0;
+    int _iterationCount = 1;
+    AnimationType _animationType = AnimationType.Blur;
+    AnimationTiming _animationTiming = AnimationTiming.EaseIn;
+    AnimationDirection _animationDirection = AnimationDirection.Reverse;
+    AnimationFillMode _animationFillMode = AnimationFillMode.None;
+    double _value = 50;
+    #endregion
 }

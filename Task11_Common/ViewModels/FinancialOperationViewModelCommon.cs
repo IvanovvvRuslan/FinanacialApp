@@ -28,5 +28,6 @@ namespace Task11_Common.ViewModels
 
         [NotMapped]
         public string OperationTypeName { get; set; }
+        public bool OperationTypeIsIncome { get; set; }
     }
 }

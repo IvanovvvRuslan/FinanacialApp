@@ -30,5 +30,14 @@ namespace Task11.ViewModels
                 return OperationType != null ? OperationType.Name : null;
             }
         }
+
+        [NotMapped]
+        public bool? OperationTypeIsIncome
+        {
+            get
+            {
+                return OperationType != null ? OperationType.IsIncome : null;
+            }
+        }
     }
 }

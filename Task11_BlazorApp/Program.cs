@@ -4,6 +4,7 @@ using MudBlazor.Services;
 using MudBlazor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using MudExtensions.Services;
 
 
 namespace Task11_BlazorApp
@@ -30,6 +31,8 @@ namespace Task11_BlazorApp
                 config.SnackbarConfiguration.ShowTransitionDuration = 500;
                 config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
             });
+
+            builder.Services.AddMudExtensions();
 
             builder.Services.AddHttpClient("API", client =>
             {

@@ -26,6 +26,7 @@ namespace Task11.Mapper
             CreateMap<FinancialOperation, FinancialOperationViewModelCommon>()
                 .ForMember(dest => dest.OperationTypeId, opt => opt.MapFrom(src => src.OperationType.Id))
                 .ForMember(dest => dest.OperationTypeName, opt => opt.MapFrom(src => src.OperationType.Name))
+                .ForMember(dest => dest.OperationTypeIsIncome, opt => opt.MapFrom(src => src.OperationType.IsIncome))
                 .ReverseMap();
 
         }

@@ -103,14 +103,14 @@
         {
             CloseButton = true,
             MaxWidth = MaxWidth.Small,
-            DisableBackdropClick = true
+            BackdropClick = false,
         };
 
         var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Confirm Delete", options);
 
         var result = await dialog.Result;
 
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             await DeleteFinancialOperation(id);
         }
