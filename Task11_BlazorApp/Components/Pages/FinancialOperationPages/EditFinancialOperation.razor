@@ -9,13 +9,14 @@
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
+
 <MudText Typo="Typo.h4" Style="margin-bottom: 20px; margin-top: 20px">Edit Financial Operation</MudText>
 
 @if (string.IsNullOrEmpty(_errorMessage))
 {
     if (_financialOperation == null)
     {
-        <p><em>Loading...</em></p>
+        <MudText>Loading...</MudText>
         <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     }
     else
@@ -32,8 +33,7 @@
                     <MudDatePicker Label="Choose a new date" @bind-Date="_financialOperation.Date" Required="true" ShowToolbar="false" />
                 </MudItem>
             </MudGrid>
-            <p>Selected fin date: @_financialOperation.Date</p>         @* 2 DELETE *@
-
+            
             <MudGrid>
                 <MudItem xs="1" Style="display: flex; align-items: center">
                     <MudText>Amount:</MudText>
@@ -53,8 +53,7 @@
                     <MudTextField @bind-Value="@_financialOperation.Description" Label="Enter a description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                 </MudItem>
             </MudGrid>
-            <p>Selected Value: @_financialOperation.Description</p>          @* 2 DELETE *@
-
+            
             <MudGrid>
                 <MudItem xs="1" Style="display: flex; align-items: center">
                     <MudText>
@@ -63,7 +62,6 @@
                 </MudItem>
                 <MudItem xs="2">
                     <MudSelect Label="Select a new operation type" @bind-Value="_financialOperation.OperationTypeId" Required="true">
-                        @* <MudSelectItem Value="0" Disabled>Please select</MudSelectItem> *@
                         @if (_operationTypeList != null)
                         {
                             @foreach (var operationType in _operationTypeList)
@@ -74,25 +72,21 @@
                     </MudSelect>
                 </MudItem>
             </MudGrid>
-            <p>Selected Value: @_financialOperation.OperationTypeId</p>          @* 2 DELETE *@
-
+            
             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined" Color="Color.Primary" Style="margin-top: 30px;">Update</MudButton>
             <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Style="margin-top: 30px;" OnClick="Cancel">Cancel</MudButton>
-
         </EditForm>
     }
-
 }
+
 
 @code {
     [Parameter] 
     public int Id { get; set; }
     private string _errorMessage;
     private string _resultMessage;
-
     private FinancialOperationViewModelCommon _financialOperation;
     private IEnumerable<OperationTypeViewModelCommon> _operationTypeList;
-
     public CultureInfo _en = CultureInfo.GetCultureInfo("en-US");
 
     protected override async Task OnInitializedAsync()

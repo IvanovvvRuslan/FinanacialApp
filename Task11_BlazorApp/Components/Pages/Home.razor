@@ -8,6 +8,7 @@
 @inject IReportService ReportService
 @rendermode InteractiveServer
 
+
 <MudAnimate @ref="_animate" Selector=".id1" Duration="_duration" AnimationType="_animationType" Value="_value" Delay="_delay" IterationCount="_iterationCount"
             AnimationTiming="_animationTiming" AnimationDirection="_animationDirection" AnimationFillMode="_animationFillMode" />
 
@@ -18,7 +19,6 @@
 <MudText Class="id1" Typo="Typo.h5" Align="Align.Center" GutterBottom="true">
     Manage your financial operations, track expenses, and generate reports with ease.
 </MudText>
-
 
 @if (_incomeFinancialOperationsNames.Length > 0)
 {
@@ -57,6 +57,7 @@
         </MudPaper>
     </MudContainer>
 }
+
 
 
 

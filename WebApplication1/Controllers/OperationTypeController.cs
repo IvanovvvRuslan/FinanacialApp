@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Task11.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using Task11.DTOs;
 using Task11.Exceptions;
-using Task11.Models;
 using Task11.Services;
 using Task11.ViewModels;
 

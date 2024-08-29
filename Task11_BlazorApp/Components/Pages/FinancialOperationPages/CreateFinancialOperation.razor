@@ -29,7 +29,6 @@
                 <MudDatePicker Label="Choose a date" @bind-Date="_financialOperation.Date" Required="true" ShowToolbar="false" />
             </MudItem>
         </MudGrid>
-        <p>Selected fin date: @_financialOperation.Date</p>         @* 2 DELETE *@
         
         <MudGrid>
             <MudItem xs="1" Style="display: flex; align-items: center">
@@ -50,8 +49,7 @@
                 <MudTextField @bind-Value="@_financialOperation.Description" Label="Enter a description" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
             </MudItem>
         </MudGrid>
-        <p>Selected Value: @_financialOperation.Description</p>          @* 2 DELETE *@
-
+        
         <MudGrid>
             <MudItem xs="1" Style="display: flex; align-items: center">
                 <MudText>
@@ -71,23 +69,21 @@
                 </MudSelect>
             </MudItem>
         </MudGrid>
-        <p>Selected Value: @_financialOperation.OperationTypeId</p>          @* 2 DELETE *@
-
+        
         <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined" Color="Color.Primary" Style="margin-top: 30px;">Create</MudButton>
         <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Style="margin-top: 30px;" OnClick="Cancel">Cancel</MudButton>
         
     </EditForm>
 }
 
+
 @code {
+    private IEnumerable<OperationTypeViewModelCommon> _operationTypeList;
+    public CultureInfo _en = CultureInfo.GetCultureInfo("en-US");
     private string _errorMessage;
     private string _resultMessage;
-
     private FinancialOperationViewModelCommon _financialOperation = new FinancialOperationViewModelCommon();
-    private IEnumerable<OperationTypeViewModelCommon> _operationTypeList;
-
-    public CultureInfo _en = CultureInfo.GetCultureInfo("en-US");
-
+    
     protected override async Task OnInitializedAsync()
     {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);

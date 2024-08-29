@@ -6,6 +6,7 @@
 @rendermode InteractiveServer
 @inject ISnackbar Snackbar
 
+
 <MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 10px;">Daily Report</MudText>
 
 <MudGrid>
@@ -16,7 +17,6 @@
         <MudDatePicker Label="Choose a report date" @bind-Date="_date" Required="true" ShowToolbar="false" />
     </MudItem>
 </MudGrid>
-<p>Selected date: @_date</p>         @* 2 DELETE *@
 
 <MudButton Variant="Variant.Filled" Style="margin-top: 10px; margin-bottom: 20px" OnClick="GetReport">Get Report</MudButton>
 

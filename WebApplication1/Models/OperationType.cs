@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Task11.Models
+﻿namespace Task11.Models
 {
     public class OperationType
     {

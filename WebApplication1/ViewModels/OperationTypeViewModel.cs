@@ -1,6 +1,4 @@
-﻿using Task11.Models;
-
-namespace Task11.ViewModels
+﻿namespace Task11.ViewModels
 {
     public class OperationTypeViewModel
     {

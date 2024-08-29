@@ -3,13 +3,13 @@
 @using Task11_Common.ViewModels
 @using Task11_BlazorApp.Components.Pages
 
-
 @page "/operationtypes"
 @inject IOperationTypeService OperationTypeService
 @inject NavigationManager NavigationManager
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @rendermode InteractiveServer
+
 
 <MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 20px;">Operation Types</MudText>
 
@@ -19,6 +19,7 @@
 {
     if (_operationTypes == null)
     {
+        <MudText>Loading...</MudText>
         <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     }
     else
@@ -56,7 +57,6 @@ else
 
 @code {
     private IEnumerable<OperationTypeViewModelCommon> _operationTypes;
-
     private string _errorMessage;
     private string _resultMessage;
 
@@ -111,19 +111,11 @@ else
         };
 
         var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Confirm Delete", options);
-        
         var result = await dialog.Result;
 
         if (!result.Canceled)
         {
             await DeleteOperationType(id);
         }
-    }
-
-    private async Task OpenDialogAsync()                                    // 2 DELETE !!!
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Simple Dialog", options);
     }
 }

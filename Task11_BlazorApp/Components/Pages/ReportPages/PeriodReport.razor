@@ -6,6 +6,7 @@
 @rendermode InteractiveServer
 @inject ISnackbar Snackbar
 
+
 <MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 10px;">Period Report</MudText>
 
 <MudGrid>
@@ -16,8 +17,6 @@
         <MudDateRangePicker Label="Choose a report period" @bind-DateRange="_dateRange" />
     </MudItem>
 </MudGrid>
-<p>Start date: @_dateRange.Start</p>
-<p>End date: @_dateRange.End</p>
 
 <MudButton Variant="Variant.Filled" Style="margin-top: 10px; margin-bottom: 20px" OnClick="GetReport">Get Report</MudButton>
 
@@ -38,6 +37,7 @@
         <MudTd DataLabel="Operation Type">@context.OperationTypeName</MudTd>
     </RowTemplate>
 </MudTable>
+
 
 @code {
     private IEnumerable<FinancialOperationViewModelCommon> _financialOperations;

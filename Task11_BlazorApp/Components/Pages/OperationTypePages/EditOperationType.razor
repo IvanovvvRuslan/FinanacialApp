@@ -7,13 +7,14 @@
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
+
 <MudText Typo="Typo.h4" Style="margin-bottom: 20px; margin-top: 20px">Edit Operation Type</MudText>
 
 @if (string.IsNullOrEmpty(_errorMessage))
 {
     if (_operationType == null)
     {
-        <p><em>Loading...</em></p>
+        <MudText>Loading...</MudText>
         <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     }
     else
@@ -45,8 +46,7 @@
                     </MudSelect>
                 </MudItem>
             </MudGrid>
-            <p>Selected Value: @_operationType.IsIncome</p> 
-
+            
             <MudGrid>
                 <MudItem xs="1" Style="display: flex; align-items: center">
                     <MudText>
@@ -70,14 +70,6 @@
     public int Id { get; set; }
     private string _errorMessage;
     private string _resultMessage;
-
-    // private string selectedValue;
-    // public string IsIncomeValue 
-    // { 
-    //     get => operationType.IsIncome.ToString(); 
-    //     set => operationType.IsIncome = bool.Parse(value); 
-    // }
-
     private OperationTypeViewModelCommon _operationType;
 
     protected override async Task OnInitializedAsync()
@@ -97,18 +89,6 @@
         _resultMessage = await OperationTypeService.UpdateOperationType(_operationType.Id, _operationType);
         NavigationManager.NavigateTo($"/operationtypes?message={_resultMessage}");
     }
-
-    // private void HandleChange(ChangeEventArgs e)
-    // {
-    //     if (e.Value.ToString() == "true")
-    //     {
-    //         _operationType.IsIncome = true;
-    //     }
-    //     else
-    //     {
-    //         _operationType.IsIncome = false;
-    //     }
-    // }
 
     private void Cancel()
     {

@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Task11.Data;
 using Task11.Exceptions;
-using Task11.Models;
 using Task11.Reports;
 using Task11.ViewModels;
 

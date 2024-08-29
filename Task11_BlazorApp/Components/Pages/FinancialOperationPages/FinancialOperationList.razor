@@ -9,6 +9,7 @@
 @inject ISnackbar Snackbar
 @rendermode InteractiveServer
 
+
 <MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 20px;">Financial Operations</MudText>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 20px" OnClick="NavigateToCreate">Create</MudButton>
@@ -17,6 +18,7 @@
 {
     if (_financialOperations == null)
     {
+        <MudText>Loading...</MudText>
         <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     }
     else
@@ -50,9 +52,9 @@
     }
 }
 
+
 @code {
     private IEnumerable<FinancialOperationViewModelCommon> _financialOperations;
-
     private string _errorMessage;
     private string _resultMessage;
 
