@@ -4,6 +4,7 @@
 @page "/dailyreport"
 @inject IReportService ReportService
 @rendermode InteractiveServer
+@inject ISnackbar Snackbar
 
 <MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 10px;">Daily Report</MudText>
 
@@ -50,5 +51,10 @@
         _financialOperations = report.Operations;
         _totalIncome = report.TotalIncome;
         _totalExpense = report.TotalExpense;
+
+        if (!_financialOperations.Any())
+        {
+            Snackbar.Add("No financial operations were found for the selected date. Please choose a different date.", Severity.Warning);
+        }
     }
 }
