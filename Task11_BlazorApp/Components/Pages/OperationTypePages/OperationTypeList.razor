@@ -37,7 +37,9 @@
                 <MudTd DataLabel="Description">@context.Description</MudTd>
                 <MudTd DataLabel="Action">
                     <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick="@(() => NavigateToEdit(@context.Id))">Edit</MudButton>
-                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => ConfirmDelete(@context.Id))">Delete</MudButton>
+                    @* <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => ConfirmDelete(@context.Id))">Delete</MudButton> *@
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => 
+                                        ConfirmDelete(@context.Id, @context.Name, @context.IsIncome, @context.Description))">Delete</MudButton>
                 </MudTd>
             </RowTemplate>
         </MudTable>
@@ -101,16 +103,42 @@ else
         }
     }
 
-    private async Task ConfirmDelete(int id)
+    // private async Task ConfirmDelete(int id)
+    // {
+    //     var options = new DialogOptions
+    //     {
+    //         CloseButton = true,
+    //         MaxWidth = MaxWidth.Small,
+    //         BackdropClick = false
+    //     };
+
+    //     var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Confirm Delete", options);
+    //     var result = await dialog.Result;
+
+    //     if (!result.Canceled)
+    //     {
+    //         await DeleteOperationType(id);
+    //     }
+    // }
+
+    private async Task ConfirmDelete(int id, string name, bool isIncome, string description)
     {
         var options = new DialogOptions
         {
             CloseButton = true,
-            MaxWidth = MaxWidth.Small,
+            MaxWidth = MaxWidth.Large,
             BackdropClick = false
         };
 
-        var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Confirm Delete", options);
+        var parameters = new DialogParameters<OperationTypeDeleteDialog>
+        {
+            { x => x.Name, name},
+            { x => x.IsIncome, isIncome ? "Income" : "Expense"},
+            { x => x.Description, description}
+        };
+
+        var dialog = await DialogService.ShowAsync<OperationTypeDeleteDialog>("Confirm Delete", parameters, options);
+
         var result = await dialog.Result;
 
         if (!result.Canceled)
@@ -118,4 +146,5 @@ else
             await DeleteOperationType(id);
         }
     }
+
 }

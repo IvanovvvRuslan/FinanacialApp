@@ -1,0 +1,30 @@
+﻿<MudDialog ContentStyle="width: 400px;">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1" />
+            Delete Operation Type ?
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Value="@Name" Label="Name" ReadOnly="true" />
+        <MudTextField Value="@IsIncome" Label="Income/Expense" ReadOnly="true" />
+        <MudTextField Value="@Description" Label="Description" ReadOnly="true" />
+        
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Error" OnClick="Submit">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public string Name { get; set; }
+    [Parameter] public string IsIncome { get; set; }
+    [Parameter] public string Description { get; set; }
+    
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+}

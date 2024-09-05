@@ -34,12 +34,13 @@
             
             <RowTemplate>
                 <MudTd DataLabel="Date">@context.Date?.ToString("dd.MM.yyyy")</MudTd>
-                <MudTd DataLabel="Amount">@context.Amount</MudTd>
+                <MudTd DataLabel="Amount">@(context.Amount.ToString("# ##0.00"))</MudTd>
                 <MudTd DataLabel="Description">@context.Description</MudTd>
                 <MudTd DataLabel="Operation Type">@context.OperationTypeName</MudTd>
                 <MudTd DataLabel="Action">
                     <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick="@(() => NavigateToEdit(@context.Id))">Edit</MudButton>
-                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => ConfirmDelete(@context.Id))">Delete</MudButton>
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => 
+                                        ConfirmDelete(@context.Id, @context.Date, @context.Amount, @context.Description, context.OperationTypeName))">Delete</MudButton>
                 </MudTd>
             </RowTemplate>
         </MudTable>
@@ -99,19 +100,26 @@
         }    
     }
 
-    private async Task ConfirmDelete (int id)
+    private async Task ConfirmDelete(int id, DateTime? date, decimal amount, string description, string operationTypeName)
     {
         var options = new DialogOptions
         {
             CloseButton = true,
-            MaxWidth = MaxWidth.Small,
+            MaxWidth = MaxWidth.Medium,
             BackdropClick = false,
         };
 
-        var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Confirm Delete", options);
+        var parameters = new DialogParameters<FinancialOperationDeleteDialog>
+        {
+            { x => x.Date, date},
+            { x => x.Amount, amount},
+            { x => x.Description, description},
+            { x => x.OperationTypeName, operationTypeName}
+        };
+
+        var dialog = await DialogService.ShowAsync<FinancialOperationDeleteDialog>("Confirm Delete", parameters, options);
 
         var result = await dialog.Result;
-
         if (!result.Canceled)
         {
             await DeleteFinancialOperation(id);

@@ -1,0 +1,31 @@
+﻿<MudDialog ContentStyle="width: 400px;">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1" />
+            Delete Financial Operation ?
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Value="@(Date?.ToString("dd.MM.yyyy"))" Label="Date" ReadOnly="true" />
+        <MudTextField Value="@(Amount.ToString("# ##0.00"))" Label="Amount" ReadOnly="true" />
+        <MudTextField Value="@Description" Label="Description" ReadOnly="true" />
+        <MudTextField Value="@OperationTypeName" Label="Operation Type" ReadOnly="true" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Error" OnClick="Submit">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public DateTime? Date { get; set; }
+    [Parameter] public decimal Amount { get; set; }
+    [Parameter] public string Description { get; set; }
+    [Parameter] public string OperationTypeName { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+}
