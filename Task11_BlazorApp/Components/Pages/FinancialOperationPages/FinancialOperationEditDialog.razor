@@ -1,0 +1,71 @@
+﻿@using Task11_Common.ViewModels
+@using System.Globalization
+@using Services
+
+@inject IOperationTypeService OperationTypeService
+@inject IFinancialOperationService FinancialOperationService
+@rendermode InteractiveServer
+
+@if (_financialOperation == null)
+{
+    <MudText>Loading...</MudText>
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <EditForm Model="@_financialOperation" OnValidSubmit="Submit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <MudDialog ContentStyle="width: 600px;">
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
+                    Edit Financial Operation
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <MudDatePicker Label="Choose a date" @bind-Date="_financialOperation.Date" Required="true" ShowToolbar="false" />
+                <MudNumericField Immediate="true" Label="Enter an amount" Format="N2" Culture="@_en" T="decimal" @bind-Value="@_financialOperation.Amount" HideSpinButtons="true" />
+                <MudTextField @bind-Value="@_financialOperation.Description" Label="Enter a description" Margin="Margin.Dense"></MudTextField>
+                <MudSelect Label="Select an operation type" @bind-Value="_financialOperation.OperationTypeId" Required="true">
+                    @if (_operationTypeList != null)
+                    {
+                        @foreach (var operationType in _operationTypeList)
+                        {
+                            <MudSelectItem Value="operationType.Id">@operationType.Name</MudSelectItem>
+                        }
+                    }
+                </MudSelect>
+            </DialogContent>
+            <DialogActions>
+                <MudButton OnClick="Cancel">Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Warning">Edit</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </EditForm>
+}
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+    public CultureInfo _en = CultureInfo.GetCultureInfo("en-US");
+
+    [Parameter] public int Id { get; set; }
+    private IEnumerable<OperationTypeViewModelCommon> _operationTypeList;
+    private FinancialOperationViewModelCommon _financialOperation;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _operationTypeList = await OperationTypeService.GetOperationTypes();
+        _financialOperation = await FinancialOperationService.GetFinancialOperationById(Id);
+    }
+
+    private void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(_financialOperation));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+}
