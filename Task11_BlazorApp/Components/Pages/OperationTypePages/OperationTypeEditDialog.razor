@@ -1,0 +1,58 @@
+﻿@using Task11_Common.ViewModels
+@using Services
+
+@inject IOperationTypeService OperationTypeService
+@rendermode InteractiveServer
+
+@if (_operationType == null)
+{
+    <MudText>Loading...</MudText>
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <EditForm Model="@_operationType" OnValidSubmit="Submit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <MudDialog ContentStyle="width: 600px;">
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1" />
+                    Create Operation Type
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <MudTextField @bind-Value="@_operationType.Name" Label="Enter a name" Required="true" Margin="Margin.Dense"></MudTextField>
+                <MudSelect T="bool" @bind-Value="_operationType.IsIncome" Margin="Margin.Dense" Label="Select Type" Variant="Variant.Text" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="true">Income</MudSelectItem>
+                    <MudSelectItem Value="false">Expense</MudSelectItem>
+                </MudSelect>
+                <MudTextField @bind-Value="@_operationType.Description" Label="Enter a description" Margin="Margin.Dense" Required="true"></MudTextField>
+            </DialogContent>
+            <DialogActions>
+                <MudButton OnClick="Cancel">Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Warning">Edit</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </EditForm>
+}
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public int Id { get; set; }
+    private OperationTypeViewModelCommon _operationType;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _operationType = await OperationTypeService.GetOperationTypeById(Id);
+    }
+
+    private void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(_operationType));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

@@ -13,7 +13,7 @@
 
 <MudText Typo="Typo.h4" Style="margin-bottom: 10px; margin-top: 20px;">Operation Types</MudText>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 20px" OnClick="NavigateToCreate">Create</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-bottom: 20px" OnClick="CreateOperationType">Create</MudButton>
 
 @if (string.IsNullOrEmpty(_errorMessage))
 {
@@ -36,8 +36,7 @@
                 <MudTd DataLabel="Income/Expense">@(@context.IsIncome ? "Income" : "Expense")</MudTd>
                 <MudTd DataLabel="Description">@context.Description</MudTd>
                 <MudTd DataLabel="Action">
-                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick="@(() => NavigateToEdit(@context.Id))">Edit</MudButton>
-                    @* <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => ConfirmDelete(@context.Id))">Delete</MudButton> *@
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick="@(() => EditOperationType(@context.Id))">Edit</MudButton>
                     <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => 
                                         ConfirmDelete(@context.Id, @context.Name, @context.IsIncome, @context.Description))">Delete</MudButton>
                 </MudTd>
@@ -64,12 +63,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("message", out var message))
-        {
-            _resultMessage = message;
-        }
-
         try
         {
             _operationTypes = await OperationTypeService.GetOperationTypes();
@@ -80,16 +73,7 @@ else
         }
     }
 
-    private void NavigateToCreate()
-    {
-        NavigationManager.NavigateTo($"/operationtypes/create?message={_resultMessage}");
-    }
-
-    private void NavigateToEdit(int id)
-    {
-        NavigationManager.NavigateTo($"operationtypes/edit/{id}?message={_resultMessage}");
-    }
-
+    #region DELETE METHOD
     private async Task DeleteOperationType(int id)
     {
         try
@@ -102,24 +86,6 @@ else
             _errorMessage = ex.Message;
         }
     }
-
-    // private async Task ConfirmDelete(int id)
-    // {
-    //     var options = new DialogOptions
-    //     {
-    //         CloseButton = true,
-    //         MaxWidth = MaxWidth.Small,
-    //         BackdropClick = false
-    //     };
-
-    //     var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Confirm Delete", options);
-    //     var result = await dialog.Result;
-
-    //     if (!result.Canceled)
-    //     {
-    //         await DeleteOperationType(id);
-    //     }
-    // }
 
     private async Task ConfirmDelete(int id, string name, bool isIncome, string description)
     {
@@ -146,5 +112,56 @@ else
             await DeleteOperationType(id);
         }
     }
+    #endregion
 
+    #region CREATE METHOD
+    private async Task CreateOperationType()
+    {
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Medium,
+            BackdropClick = false
+        };
+
+        var dialog = await DialogService.ShowAsync<OperationTypeCreateDialog>("Create Operation Type", options);
+
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is OperationTypeViewModelCommon newOperationType)
+        {
+            _resultMessage = await OperationTypeService.CreateOperationType(newOperationType);
+
+            _operationTypes = await OperationTypeService.GetOperationTypes();
+        }
+    }
+    #endregion
+
+    #region EDIT METHOD
+    private async Task EditOperationType(int id)
+    {
+        var options = new DialogOptions
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.Medium,
+                BackdropClick = false
+            };
+
+        var parameters = new DialogParameters<OperationTypeEditDialog>
+        {
+            {x => x.Id, id}
+        };
+
+        var dialog = await DialogService.ShowAsync<OperationTypeEditDialog>("Edit Operation Type", parameters, options);
+
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is OperationTypeViewModelCommon editedOperationType)
+        {
+            _resultMessage = await OperationTypeService.UpdateOperationType(id, editedOperationType);
+
+            _operationTypes = await OperationTypeService.GetOperationTypes();
+        }
+    }
+    #endregion
 }

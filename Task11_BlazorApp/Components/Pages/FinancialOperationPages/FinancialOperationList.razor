@@ -38,7 +38,6 @@
                 <MudTd DataLabel="Description">@context.Description</MudTd>
                 <MudTd DataLabel="Operation Type">@context.OperationTypeName</MudTd>
                 <MudTd DataLabel="Action">
-                    @* <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick="@(() => NavigateToEdit(@context.Id))">Edit</MudButton> *@
                     <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick="@(() => EditFinancialOperation(@context.Id))">Edit</MudButton>
                     <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => 
                                         ConfirmDelete(@context.Id, @context.Date, @context.Amount, @context.Description, context.OperationTypeName))">Delete</MudButton>
@@ -67,12 +66,6 @@
 
     protected override async Task OnInitializedAsync()              
     {
-        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);                       //DELETE !!!!!!!!!!
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("message", out var message))
-        {
-            _resultMessage = message;
-        }
-
         try
         {
             _financialOperations = await FinancialOperationService.GetFinancialOperations();
@@ -81,11 +74,6 @@
         {
             _errorMessage = ex.Message;
         }
-    }
-
-    private void NavigateToEdit(int id)                     //DELETE !!!!!!!!!!
-    {
-        NavigationManager.NavigateTo($"/financialoperations/edit/{id}?message={_resultMessage}");
     }
 
     #region DELETE METHOD
@@ -152,6 +140,7 @@
     }
     #endregion
 
+    #region EDIT METHOD
     private async Task EditFinancialOperation(int id)
     {
         var options = new DialogOptions
@@ -163,7 +152,7 @@
 
         var parameters = new DialogParameters<FinancialOperationEditDialog>
         {
-            {x => x.Id, id }
+            {x => x.Id, id}
         };
 
         var dialog = await DialogService.ShowAsync<FinancialOperationEditDialog>("Edit Financial Operation", parameters, options);
@@ -177,4 +166,5 @@
             _financialOperations = await FinancialOperationService.GetFinancialOperations();
         }
     }
+    #endregion
 }
