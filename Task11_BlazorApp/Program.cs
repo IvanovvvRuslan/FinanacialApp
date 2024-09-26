@@ -34,9 +34,11 @@ namespace Task11_BlazorApp
 
             builder.Services.AddMudExtensions();
 
+            var apiBaseUrl = builder.Configuration["API:BaseUrl"];
+
             builder.Services.AddHttpClient("API", client =>
             {
-                client.BaseAddress = new Uri("http://localhost:5066/");
+                client.BaseAddress = new Uri(apiBaseUrl);
             });
 
             builder.Services.AddScoped<IOperationTypeService, OperationTypeService>();
