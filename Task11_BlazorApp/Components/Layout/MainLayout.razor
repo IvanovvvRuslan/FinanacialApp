@@ -1,4 +1,10 @@
-﻿@inherits LayoutComponentBase
+﻿@using Services
+@using Task11_BlazorApp.Components.Pages.DialogPages
+
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject AuthState AuthState
+@inject IDialogService DialogService
 
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -12,11 +18,14 @@
         <MudLink Href="/" Style="text-decoration: none;">
             <MudIconButton Icon="@Icons.Material.Filled.AttachMoney" Color="Color.Default" Size="Size.Large"></MudIconButton>
         </MudLink>
-
+        <MudSpacer/>
+        <MudIconButton Icon="@Icons.Material.Filled.Logout" OnClick="OpenExitDialogAsync"></MudIconButton>
     </MudAppBar>
+
     <MudDrawer @bind-Open="@drawerOpen">
         <NavMenu/>
     </MudDrawer>
+
     <MudMainContent>
         @Body
     </MudMainContent>
@@ -28,11 +37,31 @@
         OnClick="DrawerToggle" />
 
 @code{
-    
+
     bool drawerOpen = false;
 
     void DrawerToggle()
     {
         drawerOpen = !drawerOpen;    
+    }
+
+    private void LogOut()
+    {
+        AuthState.LogOut();
+        NavigationManager.NavigateTo("/login"); 
+    }
+
+    private async Task OpenExitDialogAsync()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<ExitDialog>("Simple Dialog", options);
+
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            LogOut();
+        }
     }
 }

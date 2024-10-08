@@ -4,10 +4,11 @@
 @using MudBlazor.Extensions
 
 @page "/"
+@inject AuthState authState
+@inject NavigationManager NavigationManager
 @inject IFinancialOperationService FinancialOperationService
 @inject IReportService ReportService
 @rendermode InteractiveServer
-
 
 <MudAnimate @ref="_animate" Selector=".id1" Duration="_duration" AnimationType="_animationType" Value="_value" Delay="_delay" IterationCount="_iterationCount"
             AnimationTiming="_animationTiming" AnimationDirection="_animationDirection" AnimationFillMode="_animationFillMode" />
@@ -59,8 +60,6 @@
 }
 
 
-
-
 @code {
     private Report _report;
     private string _errorMessage;
@@ -76,6 +75,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (!authState.IsLoggedIn)
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
         try
         {
             var startDate = DateTime.MinValue;

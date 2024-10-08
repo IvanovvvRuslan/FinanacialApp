@@ -1,0 +1,48 @@
+﻿@using Task11_BlazorApp.Services
+@using Task11_BlazorApp.Components.Layout
+
+@page "/login"
+@layout LoginLayout
+@inject NavigationManager NavigationManager
+@inject AuthState authState
+
+
+<MudPaper Elevation="4" Class="pa-8 ma-2 mx-auto" Style="max-width: 400px;">
+    <MudText Typo="Typo.h5" Align="Align.Center">Login</MudText>
+
+    <MudTextField @bind-Value="_username" Label="Username" Required="true" />
+    <MudTextField @bind-Value="_password" Label="Password" InputType="InputType.Password" Required="true" />
+
+    <MudButton OnClick="PerformLogin" Disabled="@(!_isValid)" FullWidth Color="Color.Primary">Login</MudButton>
+
+    @if (_invalidLogin)
+    {
+        <MudAlert Severity="Severity.Error">Invalid username or password</MudAlert>
+    }
+</MudPaper>
+
+
+@code {
+    private string _username;
+    private string _password;
+    private bool _invalidLogin = false;
+
+    private bool _isValid => !string.IsNullOrEmpty(_username) && !string.IsNullOrEmpty(_password);
+
+    private void PerformLogin()
+    {
+        string correctUsername = "user";
+        string correctPassword = "password";
+
+        if (_username == correctUsername && _password == correctPassword)
+        {
+            _invalidLogin = false;
+            authState.LogIn();
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            _invalidLogin = true;
+        }
+    }
+}
