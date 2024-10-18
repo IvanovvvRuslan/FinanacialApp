@@ -1,0 +1,15 @@
+﻿@using Task11_BlazorApp.Services
+
+
+@code {
+    [Inject] private NavigationManager NavigationManager { get; set; }
+    [Inject] private AuthState AuthState { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (!AuthState.IsLoggedIn)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}

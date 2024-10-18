@@ -3,6 +3,8 @@
 @using Task11_Common.ViewModels
 @using MudBlazor.Extensions
 
+<RedirectToLogin />
+
 @page "/"
 @inject AuthState authState
 @inject NavigationManager NavigationManager
@@ -75,12 +77,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (!authState.IsLoggedIn)
-        {
-            NavigationManager.NavigateTo("/login");
-            return;
-        }
-
         try
         {
             var startDate = DateTime.MinValue;
