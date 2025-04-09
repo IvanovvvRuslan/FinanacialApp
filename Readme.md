@@ -15,11 +15,13 @@ Component-Based Architecture: Modular Blazor components for better reusability a
 
 Testing: Unit testing with MS Unit Test for mocking dependencies ensures reliability.
 
+
 Technology Stack:
-Frontend / UI: Blazor Server, MudBlazor
 
-Backend: ASP.NET Core, C#
+  Frontend / UI: Blazor Server, MudBlazor
 
-Database: MS SQL Server, Entity Framework Core
+  Backend: ASP.NET Core, C#
 
-Testing: MS Unit
+  Database: MS SQL Server, Entity Framework Core
+
+  Testing: MS Unit
