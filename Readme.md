@@ -1,4 +1,5 @@
 Financial Operations Management System
+
 This is a web-based application for managing financial operations, built with Blazor Server, ASP.NET Core, and C#. It allows users to create, edit, delete, and view financial operations, categorized by operation types. The application features a user-friendly interface with dynamic modal dialogs and utilizes role-based access control.
 
 Key Features:
